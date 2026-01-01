@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test - Advanced Fee Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .test-button:hover {
+            transform: scale(1.05);
+        }
+        .test-result {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Advanced Fee Management - Button Test</h1>
+    <p>This page tests if the buttons and functions are working correctly.</p>
+
+    <div class="test-section">
+        <h2>Test 1: Basic onclick Test</h2>
+        <button class="test-button" onclick="testBasicClick()">Click Me - Basic Test</button>
+        <div id="basic-test-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Function Availability Test</h2>
+        <button class="test-button" onclick="testFunctionAvailability()">Check Functions</button>
+        <div id="function-test-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Module Loading Test</h2>
+        <button class="test-button" onclick="testModuleLoading()">Test Module Load</button>
+        <div id="module-test-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Simulate openFeature Call</h2>
+        <button class="test-button" onclick="simulateOpenFeature()">Simulate openFeature('installments')</button>
+        <div id="simulate-test-result" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Go to Actual Page</h2>
+        <a href="fee-advanced.html" class="test-button" style="display: inline-block; text-decoration: none;">
+            Open Advanced Fee Page
+        </a>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                info: '#3b82f6'
+            };
+            return `<div style="color: ${colors[type]}">${message}</div>`;
+        }
+
+        function testBasicClick() {
+            const result = document.getElementById('basic-test-result');
+            result.innerHTML = log('✅ Basic onclick is working!', 'success');
+            result.innerHTML += log('If you can see this, onclick events are functioning.', 'info');
+        }
+
+        function testFunctionAvailability() {
+            const result = document.getElementById('function-test-result');
+            result.innerHTML = log('Checking window functions...', 'info');
+            
+            const functions = [
+                'openFeature',
+                'openInstallmentModal',
+                'openDiscountModal',
+                'openScholarshipModal',
+                'openAdvancePaymentModal',
+                'openBreakdownModal',
+                'openCategoryModal'
+            ];
+
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    result.innerHTML += log(`✅ window.${func} exists`, 'success');
+                } else {
+                    result.innerHTML += log(`❌ window.${func} NOT FOUND`, 'error');
+                }
+            });
+
+            result.innerHTML += log('---', 'info');
+            result.innerHTML += log('Note: Functions may not exist on THIS page, but should exist on fee-advanced.html', 'info');
+        }
+
+        function testModuleLoading() {
+            const result = document.getElementById('module-test-result');
+            result.innerHTML = log('Testing module loading...', 'info');
+            result.innerHTML += log('This test page does NOT load the modules.', 'info');
+            result.innerHTML += log('Please go to the actual page (Test 5) to test modules.', 'info');
+        }
+
+        function simulateOpenFeature() {
+            const result = document.getElementById('simulate-test-result');
+            result.innerHTML = log('Attempting to call openFeature...', 'info');
+            
+            if (typeof window.openFeature === 'function') {
+                try {
+                    window.openFeature('installments');
+                    result.innerHTML += log('✅ Function called successfully!', 'success');
+                } catch (error) {
+                    result.innerHTML += log(`❌ Error calling function: ${error.message}`, 'error');
+                }
+            } else {
+                result.innerHTML += log('❌ window.openFeature is not a function on this page', 'error');
+                result.innerHTML += log('This is expected - the function only exists on fee-advanced.html', 'info');
+                result.innerHTML += log('Please use Test 5 to go to the actual page.', 'info');
+            }
+        }
+
+        // Log console messages
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Test page loaded');
+        });
+    </script>
+</body>
+</html>

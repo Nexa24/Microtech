@@ -1,0 +1,234 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user has specific role
+    function hasRole(role) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    
+    // Check if user is admin or counselor
+    function isAdminOrCounselor() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'counselor'];
+    }
+    
+    // Check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // ============================================
+    // COUNSELOR INQUIRIES COLLECTION
+    // ============================================
+    
+    match /counselor_inquiries/{inquiry} {
+      // Allow read if authenticated and is admin or counselor
+      allow read: if isAdminOrCounselor();
+      
+      // Allow create if authenticated and is admin or counselor
+      // Must set counselorID to current user's ID
+      allow create: if isAdminOrCounselor() && 
+                      request.resource.data.counselorID == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['name', 'phone', 'status', 'createdAt']);
+      
+      // Allow update if authenticated and is admin or counselor
+      // Can update own inquiries or if admin
+      allow update: if isAdminOrCounselor() && 
+                      (resource.data.counselorID == request.auth.uid || hasRole('admin'));
+      
+      // Allow delete only if admin
+      allow delete: if hasRole('admin');
+    }
+    
+    // ============================================
+    // USERS COLLECTION
+    // ============================================
+    
+    match /users/{userId} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write only for own document or admin
+      allow write: if isOwner(userId) || hasRole('admin');
+    }
+    
+    // ============================================
+    // COURSES COLLECTION
+    // ============================================
+    
+    match /courses/{course} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write only for admins
+      allow write: if hasRole('admin');
+    }
+    
+    // ============================================
+    // STUDENTS COLLECTION
+    // ============================================
+    
+    match /students/{student} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow create/update for admin and counselor
+      allow create, update: if isAdminOrCounselor();
+      
+      // Allow delete only for admin
+      allow delete: if hasRole('admin');
+    }
+    
+    // ============================================
+    // FEES COLLECTION
+    // ============================================
+    
+    match /fees/{fee} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // ============================================
+    // STAFF COLLECTION
+    // ============================================
+    
+    match /staff/{staffMember} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write only for admins
+      allow write: if hasRole('admin');
+    }
+    
+    // ============================================
+    // NOTIFICATIONS COLLECTION (if stored in Firestore)
+    // ============================================
+    
+    match /notifications/{notification} {
+      // Allow read for own notifications
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Allow create for authenticated users
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Allow update/delete for own notifications
+      allow update, delete: if isAuthenticated() && 
+                              resource.data.userId == request.auth.uid;
+    }
+    
+    // ============================================
+    // ADVANCED FEE MANAGEMENT COLLECTIONS
+    // ============================================
+    
+    // Installment Plans Collection
+    match /installmentPlans/{plan} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow create, update: if isAdminOrCounselor();
+      
+      // Allow delete only for admin
+      allow delete: if hasRole('admin');
+    }
+    
+    // Discounts Collection
+    match /discounts/{discount} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow create, update: if isAdminOrCounselor();
+      
+      // Allow delete only for admin
+      allow delete: if hasRole('admin');
+    }
+    
+    // Scholarships Collection
+    match /scholarships/{scholarship} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow create, update: if isAdminOrCounselor();
+      
+      // Allow delete only for admin
+      allow delete: if hasRole('admin');
+    }
+    
+    // Late Fees Collection
+    match /lateFees/{lateFee} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // Advance Payments Collection
+    match /advancePayments/{payment} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // Fee Breakdowns Collection
+    match /feeBreakdowns/{breakdown} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // Fee Categories Collection
+    match /feeCategories/{category} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // Student Fee Breakdowns Collection
+    match /studentFeeBreakdowns/{breakdown} {
+      // Allow read for authenticated users
+      allow read: if isAuthenticated();
+      
+      // Allow write for admin and counselor
+      allow write: if isAdminOrCounselor();
+    }
+    
+    // Test Collection (for testing purposes)
+    match /test_collection/{doc} {
+      // Allow read/write for authenticated users (testing only)
+      allow read, write: if isAuthenticated();
+    }
+    
+    // ============================================
+    // DEFAULT DENY ALL OTHER COLLECTIONS
+    // ============================================
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

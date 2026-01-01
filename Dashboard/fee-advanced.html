@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Fee Management - Micro Tech Center</title>
+    <link rel="stylesheet" href="css/fees.css">
+    <link rel="stylesheet" href="css/fee-advanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Left Sidebar (same as fees.html) -->
+        <div class="left-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="logo-text">MicroTech Center</div>
+                </div>
+                <div class="sidebar-subtitle">Advanced Fee Management</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="fees.html" class="nav-item">
+                    <i class="fas fa-credit-card nav-icon"></i>
+                    <span class="nav-text">Basic Fee Management</span>
+                </a>
+                <a href="fee-advanced.html" class="nav-item active">
+                    <i class="fas fa-sliders-h nav-icon"></i>
+                    <span class="nav-text">Advanced Features</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Page Title -->
+            <div class="page-title">Advanced Fee Management</div>
+            <div class="page-subtitle">Installments, Discounts, Late Fees, and More</div>
+
+            <!-- Feature Cards -->
+            <div class="feature-cards-grid">
+                <div class="feature-card" data-feature="installments">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Installment Plans</h3>
+                    <p>Create custom payment schedules</p>
+                    <button class="btn-feature" onclick="openFeature('installments')">
+                        <i class="fas fa-arrow-right"></i> Manage
+                    </button>
+                </div>
+
+                <div class="feature-card" data-feature="discounts">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h3>Discounts & Scholarships</h3>
+                    <p>Apply offers and financial aid</p>
+                    <button class="btn-feature" onclick="openFeature('discounts')">
+                        <i class="fas fa-arrow-right"></i> Manage
+                    </button>
+                </div>
+
+                <div class="feature-card" data-feature="latefees">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Late Fee System</h3>
+                    <p>Automatic penalty calculation</p>
+                    <button class="btn-feature" onclick="openFeature('latefees')">
+                        <i class="fas fa-arrow-right"></i> Configure
+                    </button>
+                </div>
+
+                <div class="feature-card" data-feature="advance">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-arrow-circle-up"></i>
+                    </div>
+                    <h3>Advance Payments</h3>
+                    <p>Record and adjust prepayments</p>
+                    <button class="btn-feature" onclick="openFeature('advance')">
+                        <i class="fas fa-arrow-right"></i> Manage
+                    </button>
+                </div>
+
+                <div class="feature-card" data-feature="breakdown">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <h3>Fee Breakdown</h3>
+                    <p>Split fees by components</p>
+                    <button class="btn-feature" onclick="openFeature('breakdown')">
+                        <i class="fas fa-arrow-right"></i> Configure
+                    </button>
+                </div>
+
+                <div class="feature-card" data-feature="categories">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #fa8bff 0%, #2bd2ff 100%);">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>Fee Categories</h3>
+                    <p>Define custom fee types</p>
+                    <button class="btn-feature" onclick="openFeature('categories')">
+                        <i class="fas fa-arrow-right"></i> Manage
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feature Sections -->
+            <div id="feature-sections">
+                <!-- Installment Plans Section -->
+                <div id="installments-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Installment Plans</h2>
+                        <button class="btn btn-primary" onclick="openInstallmentModal()">
+                            <i class="fas fa-plus"></i> Create Plan
+                        </button>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" id="installment-search" placeholder="Search by student name or ID...">
+                        <button class="btn-icon"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Total Fee</th>
+                                    <th>Installments</th>
+                                    <th>Paid</th>
+                                    <th>Remaining</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="installments-table-body">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Discounts & Scholarships Section -->
+                <div id="discounts-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-percent"></i> Discounts & Scholarships</h2>
+                        <div>
+                            <button class="btn btn-primary" onclick="openDiscountModal()">
+                                <i class="fas fa-plus"></i> Apply Discount
+                            </button>
+                            <button class="btn btn-secondary" onclick="openScholarshipModal()">
+                                <i class="fas fa-graduation-cap"></i> Create Scholarship
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-link active" data-tab="active-discounts">Active Discounts</button>
+                        <button class="tab-link" data-tab="scholarships">Scholarships</button>
+                        <button class="tab-link" data-tab="discount-history">History</button>
+                    </div>
+
+                    <div id="active-discounts" class="tab-content active">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Type</th>
+                                        <th>Category</th>
+                                        <th>Value</th>
+                                        <th>Discount Amount</th>
+                                        <th>Applied Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="discounts-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="scholarships" class="tab-content">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Discount</th>
+                                        <th>Beneficiaries</th>
+                                        <th>Valid Until</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scholarships-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Late Fee System Section -->
+                <div id="latefees-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Late Fee Configuration</h2>
+                        <button class="btn btn-primary" onclick="saveLateFeeRules()">
+                            <i class="fas fa-save"></i> Save Rules
+                        </button>
+                    </div>
+
+                    <div class="late-fee-config">
+                        <div class="division-rules">
+                            <h3>Gama Abacus</h3>
+                            <div class="rule-editor">
+                                <div class="form-group">
+                                    <label>Rule Type</label>
+                                    <select id="gama-rule-type">
+                                        <option value="fixed-per-day">Fixed Amount Per Day</option>
+                                        <option value="percentage-per-day">Percentage Per Day</option>
+                                        <option value="tiered">Tiered System</option>
+                                        <option value="fixed-one-time">One-time Fixed</option>
+                                    </select>
+                                </div>
+                                <div id="gama-rule-details" class="rule-details"></div>
+                            </div>
+                        </div>
+
+                        <div class="division-rules">
+                            <h3>LBS Skill Centre</h3>
+                            <div class="rule-editor">
+                                <div class="form-group">
+                                    <label>Rule Type</label>
+                                    <select id="lbs-rule-type">
+                                        <option value="fixed-per-day">Fixed Amount Per Day</option>
+                                        <option value="percentage-per-day">Percentage Per Day</option>
+                                        <option value="tiered" selected>Tiered System</option>
+                                        <option value="fixed-one-time">One-time Fixed</option>
+                                    </select>
+                                </div>
+                                <div id="lbs-rule-details" class="rule-details"></div>
+                            </div>
+                        </div>
+
+                        <div class="division-rules">
+                            <h3>CAPT</h3>
+                            <div class="rule-editor">
+                                <div class="form-group">
+                                    <label>Rule Type</label>
+                                    <select id="capt-rule-type">
+                                        <option value="fixed-per-day">Fixed Amount Per Day</option>
+                                        <option value="percentage-per-day" selected>Percentage Per Day</option>
+                                        <option value="tiered">Tiered System</option>
+                                        <option value="fixed-one-time">One-time Fixed</option>
+                                    </select>
+                                </div>
+                                <div id="capt-rule-details" class="rule-details"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Late Fee Calculator -->
+                    <div class="calculator-section">
+                        <h3><i class="fas fa-calculator"></i> Late Fee Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Division</label>
+                                    <select id="calc-division">
+                                        <option value="gama">Gama Abacus</option>
+                                        <option value="lbs">LBS Skill Centre</option>
+                                        <option value="capt">CAPT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Original Fee Amount</label>
+                                    <input type="number" id="calc-amount" placeholder="₹ 0.00">
+                                </div>
+                                <div class="form-group">
+                                    <label>Due Date</label>
+                                    <input type="date" id="calc-due-date">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" onclick="calculateLateFee()">
+                                        <i class="fas fa-calculator"></i> Calculate
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="calc-result" class="calc-result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advance Payments Section -->
+                <div id="advance-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-arrow-circle-up"></i> Advance Payments</h2>
+                        <button class="btn btn-primary" onclick="openAdvancePaymentModal()">
+                            <i class="fas fa-plus"></i> Record Advance
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Amount Paid</th>
+                                    <th>Used Amount</th>
+                                    <th>Remaining Balance</th>
+                                    <th>Payment Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="advance-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Fee Breakdown Section -->
+                <div id="breakdown-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-list-alt"></i> Fee Breakdown by Course</h2>
+                        <button class="btn btn-primary" onclick="openBreakdownModal()">
+                            <i class="fas fa-plus"></i> Create Breakdown
+                        </button>
+                    </div>
+
+                    <div class="breakdown-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Fee Categories Section -->
+                <div id="categories-section" class="feature-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tags"></i> Fee Categories</h2>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </div>
+
+                    <div class="categories-grid" id="categories-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+
+                    <div class="category-templates">
+                        <h3>Quick Add Templates</h3>
+                        <div class="template-buttons" id="template-buttons">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals will be added here -->
+    <div id="modals-container"></div>
+
+    <!-- Load student loader first -->
+    <script type="module" src="js/fee-student-loader.js"></script>
+    <script type="module" src="js/fee-advanced-modals.js"></script>
+    <script type="module" src="js/fee-advanced-features.js"></script>
+    <script type="module" src="js/fee-advanced-ui.js"></script>
+    
+    <script type="module">
+        // Auto-load students on page load
+        import studentLoader from './js/fee-student-loader.js';
+        
+        console.log('🚀 Initializing Advanced Fee Management...');
+        
+        // Load students immediately
+        (async () => {
+            try {
+                const students = await studentLoader.autoLoadStudents();
+                console.log(`✅ ${students.length} students loaded and cached`);
+                
+                // Optionally enable real-time sync
+                // studentLoader.enableRealTimeSync();
+                
+                // Display statistics
+                const stats = studentLoader.getStatistics();
+                console.log('📊 Student Statistics:', stats);
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize students:', error);
+            }
+        })();
+    </script>
+</body>
+</html>

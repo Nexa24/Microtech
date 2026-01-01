@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Module - Debug Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e5e7eb;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 30, 40, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 { color: #667eea; margin-top: 0; }
+        h2 { color: #f5576c; margin-top: 30px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 8px; }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .warning { background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.9; }
+        pre {
+            background: rgba(15, 15, 25, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-result { margin: 10px 0; padding: 10px; }
+        code { color: #f5576c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Course Management Module - Debug Test</h1>
+        <p>This page will help you diagnose any issues with the Course Management Module.</p>
+
+        <h2>1️⃣ File Structure Check</h2>
+        <div id="fileCheck"></div>
+        <button onclick="checkFiles()">Check Files</button>
+
+        <h2>2️⃣ Firebase Connection Test</h2>
+        <div id="firebaseCheck"></div>
+        <button onclick="testFirebase()">Test Firebase</button>
+
+        <h2>3️⃣ Module Loading Test</h2>
+        <div id="moduleCheck"></div>
+        <button onclick="testModules()">Test Modules</button>
+
+        <h2>4️⃣ Course Manager Test</h2>
+        <div id="managerCheck"></div>
+        <button onclick="testManager()">Test Manager</button>
+
+        <h2>5️⃣ Load Courses Test</h2>
+        <div id="coursesCheck"></div>
+        <button onclick="testLoadCourses()">Test Load Courses</button>
+
+        <h2>📊 Console Logs</h2>
+        <pre id="consoleLogs">Console logs will appear here...</pre>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Capture console logs
+        const logs = [];
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = function(...args) {
+            logs.push(['LOG', ...args]);
+            originalLog.apply(console, args);
+            updateLogs();
+        };
+
+        console.error = function(...args) {
+            logs.push(['ERROR', ...args]);
+            originalError.apply(console, args);
+            updateLogs();
+        };
+
+        console.warn = function(...args) {
+            logs.push(['WARN', ...args]);
+            originalWarn.apply(console, args);
+            updateLogs();
+        };
+
+        function updateLogs() {
+            const logsDiv = document.getElementById('consoleLogs');
+            logsDiv.textContent = logs.map(log => log.join(' ')).join('\n');
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUJut5RTre7-dMnZa1F7aMUgYMz3xN06Y",
+            authDomain: "microtech-88235.firebaseapp.com",
+            projectId: "microtech-88235",
+            storageBucket: "microtech-88235.appspot.com",
+            messagingSenderId: "156750699730",
+            appId: "1:156750699730:web:5ec11e8b5af90a21a26159"
+        };
+
+        let app, db;
+
+        window.checkFiles = function() {
+            const div = document.getElementById('fileCheck');
+            div.innerHTML = '<div class="status info">Checking file structure...</div>';
+            
+            const requiredFiles = [
+                'js/courses.js',
+                'js/toast.js',
+                'js/notification-manager.js',
+                'js/profile-utils.js'
+            ];
+
+            let html = '<div class="status success">✅ File check completed (visual only - manual verification needed):</div>';
+            html += '<ul>';
+            requiredFiles.forEach(file => {
+                html += `<li><code>${file}</code></li>`;
+            });
+            html += '</ul>';
+            html += '<p>⚠️ Please verify these files exist in the Dashboard directory</p>';
+            
+            div.innerHTML = html;
+        };
+
+        window.testFirebase = async function() {
+            const div = document.getElementById('firebaseCheck');
+            div.innerHTML = '<div class="status info">Testing Firebase connection...</div>';
+            
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                
+                div.innerHTML = '<div class="status success">✅ Firebase initialized successfully!</div>';
+                div.innerHTML += `<pre>Project ID: microtech-88235\nApp Name: ${app.name}\nFirestore: Connected</pre>`;
+            } catch (error) {
+                div.innerHTML = `<div class="status error">❌ Firebase Error: ${error.message}</div>`;
+                console.error('Firebase init error:', error);
+            }
+        };
+
+        window.testModules = async function() {
+            const div = document.getElementById('moduleCheck');
+            div.innerHTML = '<div class="status info">Testing module imports...</div>';
+            
+            let html = '';
+            
+            try {
+                const toast = await import('./js/toast.js');
+                html += '<div class="status success">✅ toast.js loaded successfully</div>';
+            } catch (error) {
+                html += `<div class="status error">❌ toast.js failed: ${error.message}</div>`;
+            }
+
+            try {
+                const nm = await import('./js/notification-manager.js');
+                html += '<div class="status success">✅ notification-manager.js loaded successfully</div>';
+            } catch (error) {
+                html += `<div class="status error">❌ notification-manager.js failed: ${error.message}</div>`;
+            }
+
+            try {
+                const profile = await import('./js/profile-utils.js');
+                html += '<div class="status success">✅ profile-utils.js loaded successfully</div>';
+            } catch (error) {
+                html += `<div class="status warning">⚠️ profile-utils.js failed: ${error.message} (may be optional)</div>`;
+            }
+
+            try {
+                const courses = await import('./js/courses.js');
+                html += '<div class="status success">✅ courses.js loaded successfully</div>';
+            } catch (error) {
+                html += `<div class="status error">❌ courses.js failed: ${error.message}</div>`;
+            }
+            
+            div.innerHTML = html;
+        };
+
+        window.testManager = function() {
+            const div = document.getElementById('managerCheck');
+            
+            if (window.courseManager) {
+                div.innerHTML = '<div class="status success">✅ CourseManager is available globally!</div>';
+                div.innerHTML += `<pre>Type: ${typeof window.courseManager}\nConstructor: ${window.courseManager.constructor.name}</pre>`;
+            } else {
+                div.innerHTML = '<div class="status error">❌ CourseManager not found on window object</div>';
+                div.innerHTML += '<p>💡 Try opening courses.html instead, or wait a few seconds and try again</p>';
+            }
+        };
+
+        window.testLoadCourses = async function() {
+            const div = document.getElementById('coursesCheck');
+            div.innerHTML = '<div class="status info">Loading courses from Firestore...</div>';
+            
+            try {
+                if (!db) {
+                    await testFirebase();
+                    if (!db) throw new Error('Firebase not initialized');
+                }
+
+                const coursesRef = collection(db, 'courses');
+                const snapshot = await getDocs(coursesRef);
+                
+                let html = `<div class="status success">✅ Found ${snapshot.size} courses in Firestore!</div>`;
+                html += '<h3>Courses:</h3><ul>';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    html += `<li><strong>${data.name || 'Untitled'}</strong> - ${data.division || 'N/A'} - ₹${data.totalFee || 0}</li>`;
+                });
+                
+                html += '</ul>';
+                div.innerHTML = html;
+            } catch (error) {
+                div.innerHTML = `<div class="status error">❌ Error loading courses: ${error.message}</div>`;
+                console.error('Load courses error:', error);
+            }
+        };
+
+        // Auto-run on load
+        console.log('🔍 Debug page loaded - Run tests using the buttons above');
+    </script>
+</body>
+</html>

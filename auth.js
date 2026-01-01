@@ -1,19 +1,127 @@
+// Show/Hide loading overlay
 function showLoading(show = true) {
   const loader = document.getElementById("loadingOverlay");
-  loader.style.display = show ? "flex" : "none";
+  if (loader) {
+    loader.style.display = show ? "flex" : "none";
+  }
+}
+
+// ==== NOTIFICATION SYSTEM ====
+function showToast(message, type = 'info', title = '') {
+  // Create toast container if it doesn't exist
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '!',
+    info: 'i'
+  };
+
+  toast.innerHTML = `
+    <div class="toast-icon">${icons[type] || icons.info}</div>
+    <div class="toast-content">
+      ${title ? `<div class="toast-title">${title}</div>` : ''}
+      <div class="toast-message">${message}</div>
+    </div>
+    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    toast.classList.add('hiding');
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+}
+
+function showAlert(message, type = 'info', title = '') {
+  const overlay = document.createElement('div');
+  overlay.className = 'custom-alert-overlay';
+  
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '!',
+    info: 'i'
+  };
+  
+  const titles = {
+    success: title || 'Success',
+    error: title || 'Error',
+    warning: title || 'Warning',
+    info: title || 'Information'
+  };
+
+  overlay.innerHTML = `
+    <div class="custom-alert-box ${type}">
+      <div class="custom-alert-header">
+        <div class="custom-alert-icon">${icons[type] || icons.info}</div>
+        <div class="custom-alert-title">${titles[type]}</div>
+      </div>
+      <div class="custom-alert-body">${message}</div>
+      <div class="custom-alert-footer">
+        <button class="custom-alert-btn custom-alert-btn-primary" onclick="this.closest('.custom-alert-overlay').remove()">OK</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  
+  // Remove on background click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+}
+
+// Show error on input field
+function showInputError(inputId, message) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  
+  input.classList.add('error');
+  
+  // Remove existing error message
+  const existingError = input.parentElement.querySelector('.error-message');
+  if (existingError) existingError.remove();
+  
+  // Add new error message
+  const errorMsg = document.createElement('div');
+  errorMsg.className = 'error-message';
+  errorMsg.textContent = message;
+  input.parentElement.appendChild(errorMsg);
+  
+  // Remove error on input
+  input.addEventListener('input', function removeError() {
+    input.classList.remove('error');
+    const errMsg = input.parentElement.querySelector('.error-message');
+    if (errMsg) errMsg.remove();
+    input.removeEventListener('input', removeError);
+  });
 }
 
 // ==== Firebase Setup ====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
   getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import {
   getFirestore,
-  setDoc,
   getDoc,
+  setDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -33,147 +141,213 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ===== FORM TOGGLE =====
+// ===== WAIT FOR DOM TO LOAD =====
 document.addEventListener('DOMContentLoaded', () => {
-  const toggleLinks = document.querySelectorAll('.toggle-link');
-  const loginFormBox = document.querySelector('.form-box.login');
-  const registerFormBox = document.querySelector('.form-box.register');
-  const closeButton = document.querySelector('.close-btn-modal');
-  const regRole = document.getElementById("regRole");
-  const adminSecret = document.getElementById("adminSecret");
+  
+  // Auto-fill email if remembered
+  const rememberMe = localStorage.getItem('rememberMe');
+  const lastEmail = localStorage.getItem('lastEmail');
+  
+  if (rememberMe === 'true' && lastEmail) {
+    const emailInput = document.getElementById('loginEmail');
+    const rememberCheckbox = document.getElementById('rememberMe');
+    if (emailInput) emailInput.value = lastEmail;
+    if (rememberCheckbox) rememberCheckbox.checked = true;
+  }
 
-  // Toggle login/register
-  toggleLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      const target = link.getAttribute('data-target');
-      if (target === 'register') {
-        loginFormBox.classList.remove('active');
-        registerFormBox.classList.add('active');
-      } else {
-        registerFormBox.classList.remove('active');
-        loginFormBox.classList.add('active');
+  // ===== LOGIN FORM SUBMISSION =====
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      const rememberMeChecked = document.getElementById("rememberMe")?.checked || false;
+
+      // Basic validation
+      if (!email || !password) {
+        showInputError('loginEmail', !email ? 'Email is required' : '');
+        showInputError('loginPassword', !password ? 'Password is required' : '');
+        showToast('Please enter both email and password.', 'error', 'Validation Error');
+        return;
+      }
+
+      try {
+        showLoading(true);
+        
+        // Set persistence based on remember me
+        if (rememberMeChecked) {
+          await setPersistence(auth, browserLocalPersistence);
+          localStorage.setItem('rememberMe', 'true');
+          localStorage.setItem('lastEmail', email);
+        } else {
+          localStorage.removeItem('rememberMe');
+          localStorage.removeItem('lastEmail');
+        }
+        
+        // Sign in with Firebase
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Get user data from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        let userData;
+        
+        if (!userDoc.exists()) {
+          // If no user document, create a default admin profile for this user
+          console.log("User document not found, creating default admin profile");
+          
+          userData = {
+            email: user.email,
+            role: "admin",
+            createdAt: new Date(),
+            name: user.email.split('@')[0]
+          };
+          
+          try {
+            await setDoc(userDocRef, userData);
+            console.log("Default admin profile created successfully");
+            showToast('Welcome! Your admin profile has been created.', 'success', 'Profile Created');
+          } catch (createError) {
+            console.error("Error creating user profile:", createError);
+            showAlert("Unable to create user profile. Please contact support.", 'error', 'Profile Error');
+            await auth.signOut();
+            showLoading(false);
+            return;
+          }
+        } else {
+          userData = userDoc.data();
+        }
+
+        // Redirect based on user role
+        switch (userData.role) {
+          case "admin":
+            window.location.href = "Dashboard/admin-dashboard.html";
+            break;
+          case "counselor":
+            window.location.href = "Dashboard/counselor-dashboard.html";
+            break;
+          case "teacher":
+            window.location.href = "Dashboard/teacher-dashboard.html";
+            break;
+          case "student":
+            window.location.href = "Dashboard/student-dashboard.html";
+            break;
+          default:
+            showAlert("Invalid user role. Please contact support.", 'error', 'Access Denied');
+            await auth.signOut();
+            showLoading(false);
+        }
+
+      } catch (error) {
+        console.error("Login error:", error);
+        
+        // User-friendly error messages
+        let errorTitle = "Login Failed";
+        let errorMessage = "";
+        
+        switch (error.code) {
+          case 'auth/invalid-email':
+            errorMessage = "Invalid email format. Please check and try again.";
+            showInputError('loginEmail', 'Invalid email format');
+            break;
+          case 'auth/user-disabled':
+            errorMessage = "This account has been disabled. Please contact support.";
+            break;
+          case 'auth/user-not-found':
+            errorMessage = "No account found with this email address.";
+            showInputError('loginEmail', 'Account not found');
+            break;
+          case 'auth/wrong-password':
+            errorMessage = "Incorrect password. Please try again.";
+            showInputError('loginPassword', 'Incorrect password');
+            break;
+          case 'auth/invalid-credential':
+            errorMessage = "Invalid email or password. Please check your credentials.";
+            showInputError('loginEmail', '');
+            showInputError('loginPassword', 'Invalid credentials');
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = "Too many failed login attempts. Please try again later.";
+            errorTitle = "Account Temporarily Locked";
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = "Network error. Please check your internet connection.";
+            errorTitle = "Connection Error";
+            break;
+          default:
+            errorMessage = error.message || "An unexpected error occurred. Please try again.";
+        }
+        
+        showAlert(errorMessage, 'error', errorTitle);
+        showLoading(false);
       }
     });
-  });
-
-  // Show admin code field only if admin is selected
-  regRole.addEventListener("change", () => {
-    adminSecret.style.display = (regRole.value === "admin" || regRole.value === "counselor") ? "flex" : "none";
-  });
-
-  // Close to home
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
   }
 });
 
-
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("regName").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
-  const password = document.getElementById("regPassword").value.trim();
-  const number = document.getElementById("regNumber").value.trim();
-  const whatsapp = document.getElementById("regWhatsApp").value.trim();
-  const age = document.getElementById("regAge").value.trim();
-  const address = document.getElementById("regAddress").value.trim();
-  const district = document.getElementById("regDistrict").value.trim();
-  const state = document.getElementById("regState").value.trim();
-  const country = document.getElementById("regCountry").value.trim();
-  const zip = document.getElementById("regZip").value.trim();
-  const role = document.getElementById("regRole").value;
-  const adminCode = document.getElementById("adminCode")?.value?.trim() || "";
-
-  // Require secret for both admin and counselor
-  if ((role === "admin" || role === "counselor") && adminCode !== "adminjenny22*") {
-    alert("❌ Invalid secret code for this role.");
-    return;
-  }
-
-  try {
-    showLoading(true);
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    await setDoc(doc(db, "users", user.uid), {
-      name,
-      email,
-      number,
-      whatsapp,
-      age,
-      address,
-      district,
-      state,
-      country,
-      zip,
-      role,
-      createdAt: new Date()
-    });
-
-    alert("✅ Registered successfully. Please login.");
-    document.querySelector('.form-box.register').classList.remove('active');
-    document.querySelector('.form-box.login').classList.add('active');
-  } catch (error) {
-    alert("❌ " + error.message);
-  } finally {
-    showLoading(false);
-  }
-});
-
-
-// ===== LOGIN =====
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-  const selectedRole = document.getElementById("loginRole").value;
-
-  try {
-    showLoading(true);
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-
-    if (!userData) {
-      alert("❌ No user data found.");
+// ===== HANDLE FORGOT PASSWORD LINK =====
+const forgotLink = document.querySelector('.forgot-link');
+if (forgotLink) {
+  forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail')?.value.trim();
+    
+    if (!email) {
+      showToast("Please enter your email address first", 'warning', 'Email Required');
+      showInputError('loginEmail', 'Enter your email to reset password');
       return;
     }
+    
+    showAlert(`Password reset instructions will be sent to:<br><strong>${email}</strong><br><br>This feature is coming soon. Please contact admin for now.`, 'info', 'Password Reset');
+  });
+}
 
-    if (userData.role !== selectedRole) {
-      alert("❌ Role mismatch. Please select the correct role.");
-      return;
+// ===== HANDLE REGISTER LINK =====
+const registerLink = document.querySelector('.register-link');
+if (registerLink) {
+  registerLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showAlert("Registration is currently managed by administrators only.<br><br>Please contact <strong>support@microtech.com</strong> for account creation.", 'info', 'Registration Info');
+  });
+}
+
+// ===== CHECK IF ALREADY LOGGED IN =====
+// Only redirect if we're on the auth page
+const isAuthPage = window.location.pathname.endsWith('auth.html') || window.location.pathname === '/';
+
+if (isAuthPage) {
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          
+          // Redirect to appropriate dashboard
+          switch (userData.role) {
+            case "admin":
+              window.location.href = "Dashboard/admin-dashboard.html";
+              break;
+            case "counselor":
+              window.location.href = "Dashboard/counselor-dashboard.html";
+              break;
+            case "teacher":
+              window.location.href = "Dashboard/teacher-dashboard.html";
+              break;
+            case "student":
+              window.location.href = "Dashboard/student-dashboard.html";
+              break;
+          }
+        }
+      } catch (error) {
+        console.error("Error checking auth state:", error);
+      }
     }
-
-    // Redirect by role
-    switch (userData.role) {
-      case "gamaabacus":
-        window.location.href = "Dashboard/gama-dashboard.html";
-        break;
-      case "teacher":
-        window.location.href = "Dashboard/teacher-dashboard.html";
-        break;
-      case "admin":
-        window.location.href = "Dashboard/admin-dashboard.html";
-        break;
-      case "counselor":
-        window.location.href = "Dashboard/counselor-dashboard.html";
-        break;
-      case "student":
-        window.location.href = "Dashboard/student-dashboard.html";
-        break;
-      default:
-        alert("❌ Unknown role.");
-    }
-
-  } catch (error) {
-    alert("❌ " + error.message);
-  } finally {
-    showLoading(false);
-  }
-});
+  });
+}

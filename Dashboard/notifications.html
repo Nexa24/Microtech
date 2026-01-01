@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MicroTech Center - Notifications</title>
     <link rel="stylesheet" href="admin-dashboard.css">
+    <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -56,6 +57,10 @@
                 <a href="fees" class="nav-item">
                     <i class="fas fa-credit-card nav-icon"></i>
                     <span class="nav-text">Fee Management</span>
+                </a>
+                <a href="receipt.html" class="nav-item">
+                    <i class="fas fa-receipt nav-icon"></i>
+                    <span class="nav-text">Receipt Management</span>
                 </a>
                 <a href="communication" class="nav-item">
                     <i class="fas fa-comments nav-icon"></i>
@@ -134,11 +139,63 @@
 
             <!-- Dashboard Content -->
             <div class="dashboard-title">Notifications</div>
-            <div class="dashboard-subtitle">Manage notifications.</div>
+            <div class="dashboard-subtitle">View and manage all system notifications</div>
 
-            <!-- Placeholder Content -->
-            <div style="padding: 20px;">
-                <h2>Notifications Content Goes Here</h2>
+            <!-- Notification Filters -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i> All Notifications
+                </button>
+                <button class="filter-btn" data-filter="success">
+                    <i class="fas fa-check-circle"></i> Success
+                </button>
+                <button class="filter-btn" data-filter="info">
+                    <i class="fas fa-info-circle"></i> Info
+                </button>
+                <button class="filter-btn" data-filter="warning">
+                    <i class="fas fa-exclamation-triangle"></i> Warnings
+                </button>
+                <button class="filter-btn" data-filter="error">
+                    <i class="fas fa-times-circle"></i> Errors
+                </button>
+                <button class="filter-btn" data-filter="unread">
+                    <i class="fas fa-envelope"></i> Unread
+                </button>
+            </div>
+
+            <!-- Actions Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div class="notifications-stats">
+                    <span class="stat-item">
+                        <strong id="total-notifications">0</strong> Total
+                    </span>
+                    <span class="stat-item">
+                        <strong id="unread-notifications">0</strong> Unread
+                    </span>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="mark-all-read-btn" class="action-btn">
+                        <i class="fas fa-check-double"></i> Mark All as Read
+                    </button>
+                    <button id="clear-all-btn" class="action-btn danger">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                    <button id="reset-notifications-btn" class="action-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-redo"></i> Reset Notifications
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notifications List -->
+            <div id="notifications-page-list" class="notifications-page-container">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-bell-slash"></i>
+                <h3>No Notifications</h3>
+                <p>You're all caught up! Check back later for updates.</p>
             </div>
         </div>
     </div>

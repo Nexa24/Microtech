@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Fee System Setup - Micro Tech Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .setup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .setup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .setup-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .setup-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .setup-body {
+            padding: 40px;
+        }
+
+        .setup-step {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .setup-step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setup-step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn-setup {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-setup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-setup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .collection-list {
+            margin-top: 20px;
+        }
+
+        .collection-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .collection-item i {
+            color: #667eea;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .feature-item i {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature-item h4 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .feature-item p {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .next-steps {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .next-steps h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .next-steps ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .next-steps li {
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .next-steps li i {
+            color: #667eea;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1><i class="fas fa-rocket"></i> Advanced Fee System Setup</h1>
+            <p>Initialize Firebase collections and configure advanced fee management</p>
+        </div>
+
+        <div class="setup-body">
+            <div class="setup-step">
+                <h3>
+                    <span class="step-number">1</span>
+                    Firebase Connection
+                </h3>
+                <p>Connect to your existing Firebase project and verify access to Firestore database.</p>
+            </div>
+
+            <div class="setup-step">
+                <h3>
+                    <span class="step-number">2</span>
+                    Create Collections
+                </h3>
+                <p>Automatically create 6 Firebase collections required for advanced fee management:</p>
+                <div class="collection-list">
+                    <div class="collection-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <strong>installmentPlans</strong> - Payment schedules
+                    </div>
+                    <div class="collection-item">
+                        <i class="fas fa-percent"></i>
+                        <strong>discounts</strong> - Discount records
+                    </div>
+                    <div class="collection-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <strong>scholarships</strong> - Scholarship programs
+                    </div>
+                    <div class="collection-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>lateFees</strong> - Late fee calculations
+                    </div>
+                    <div class="collection-item">
+                        <i class="fas fa-arrow-circle-up"></i>
+                        <strong>advancePayments</strong> - Prepayment tracking
+                    </div>
+                    <div class="collection-item">
+                        <i class="fas fa-list-alt"></i>
+                        <strong>feeBreakdowns</strong> - Course fee structures
+                    </div>
+                </div>
+            </div>
+
+            <div class="setup-step">
+                <h3>
+                    <span class="step-number">3</span>
+                    Configure Features
+                </h3>
+                <p>Initialize default settings and templates for all features:</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <h4>Installments</h4>
+                        <p>Flexible payment plans</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-tag"></i>
+                        <h4>Discounts</h4>
+                        <p>Multiple discount types</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-clock"></i>
+                        <h4>Late Fees</h4>
+                        <p>Automatic penalties</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h4>Advances</h4>
+                        <p>Prepayment management</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <h4>Breakdowns</h4>
+                        <p>Fee component tracking</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-folder"></i>
+                        <h4>Categories</h4>
+                        <p>Custom fee types</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <button class="btn-setup" id="setup-btn" onclick="runSetup()">
+                <i class="fas fa-play"></i> Initialize Advanced Fee System
+            </button>
+
+            <div id="status-message" class="status-message"></div>
+
+            <div class="next-steps" id="next-steps" style="display: none;">
+                <h3><i class="fas fa-check-circle"></i> Setup Complete! Next Steps:</h3>
+                <ul>
+                    <li>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Open <strong>fee-advanced.html</strong> to start using the advanced features</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Configure late fee rules for each division (Gama, LBS, CAPT)</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Create fee breakdowns for your courses</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Set up scholarship programs if applicable</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Train staff on using the new features</span>
+                    </li>
+                </ul>
+                <button class="btn-setup" onclick="window.location.href='fee-advanced.html'" style="margin-top: 20px;">
+                    <i class="fas fa-external-link-alt"></i> Open Advanced Fee Management
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase.js';
+        import { 
+            collection, 
+            doc, 
+            setDoc, 
+            addDoc, 
+            getDocs,
+            Timestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        let setupRunning = false;
+
+        window.runSetup = async function() {
+            if (setupRunning) return;
+            setupRunning = true;
+
+            const btn = document.getElementById('setup-btn');
+            const statusDiv = document.getElementById('status-message');
+            const progressFill = document.getElementById('progress-fill');
+            const nextSteps = document.getElementById('next-steps');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner loading"></i> Initializing...';
+            
+            statusDiv.className = 'status-message status-info show';
+            statusDiv.innerHTML = '<i class="fas fa-info-circle"></i> Starting setup process...';
+
+            try {
+                // Step 1: Verify Firebase connection (10%)
+                progressFill.style.width = '10%';
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Step 2: Create sample data for each collection (15% each = 90%)
+                
+                // Installment Plans (25%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating installment plans collection...';
+                progressFill.style.width = '25%';
+                await addDoc(collection(db, 'installmentPlans'), {
+                    studentId: 'SAMPLE_001',
+                    studentName: 'Sample Student',
+                    course: 'Web Development',
+                    totalFee: 50000,
+                    numberOfInstallments: 5,
+                    installments: [
+                        { installmentNumber: 1, amount: 10000, dueDate: '2025-02-01', status: 'pending' },
+                        { installmentNumber: 2, amount: 10000, dueDate: '2025-03-01', status: 'pending' },
+                        { installmentNumber: 3, amount: 10000, dueDate: '2025-04-01', status: 'pending' },
+                        { installmentNumber: 4, amount: 10000, dueDate: '2025-05-01', status: 'pending' },
+                        { installmentNumber: 5, amount: 10000, dueDate: '2025-06-01', status: 'pending' }
+                    ],
+                    createdAt: Timestamp.now(),
+                    status: 'active'
+                });
+
+                // Discounts (40%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating discounts collection...';
+                progressFill.style.width = '40%';
+                await addDoc(collection(db, 'discounts'), {
+                    studentId: 'SAMPLE_002',
+                    studentName: 'Sample Student 2',
+                    discountType: 'percentage',
+                    discountCategory: 'early-bird',
+                    discountValue: 10,
+                    discountAmount: 5000,
+                    baseFee: 50000,
+                    finalFee: 45000,
+                    reason: 'Sample early bird discount',
+                    appliedBy: 'admin',
+                    appliedDate: Timestamp.now(),
+                    course: 'Digital Marketing',
+                    status: 'active'
+                });
+
+                // Scholarships (55%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating scholarships collection...';
+                progressFill.style.width = '55%';
+                await addDoc(collection(db, 'scholarships'), {
+                    name: 'Merit Scholarship 2025',
+                    type: 'merit',
+                    discountType: 'percentage',
+                    discountValue: 20,
+                    eligibilityCriteria: 'Minimum 80% in qualifying examination',
+                    maxBeneficiaries: 10,
+                    currentBeneficiaries: 0,
+                    validFrom: '2025-01-01',
+                    validUntil: '2025-12-31',
+                    courses: ['Web Development', 'Digital Marketing', 'Graphic Design'],
+                    status: 'active',
+                    createdAt: Timestamp.now()
+                });
+
+                // Late Fees (70%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating late fees collection...';
+                progressFill.style.width = '70%';
+                await addDoc(collection(db, 'lateFees'), {
+                    studentId: 'SAMPLE_003',
+                    studentName: 'Sample Student 3',
+                    originalFee: 30000,
+                    dueDate: '2025-01-15',
+                    paidDate: '2025-01-20',
+                    daysLate: 5,
+                    lateFeeAmount: 250,
+                    totalAmount: 30250,
+                    receiptNo: 'LATE-001',
+                    status: 'applied',
+                    createdAt: Timestamp.now()
+                });
+
+                // Advance Payments (85%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating advance payments collection...';
+                progressFill.style.width = '85%';
+                await addDoc(collection(db, 'advancePayments'), {
+                    studentId: 'SAMPLE_004',
+                    studentName: 'Sample Student 4',
+                    amount: 20000,
+                    paymentDate: '2025-01-10',
+                    paymentMode: 'UPI',
+                    receiptNo: 'ADV-001',
+                    remainingBalance: 20000,
+                    usedAmount: 0,
+                    status: 'available',
+                    adjustments: [],
+                    notes: 'Sample advance payment',
+                    createdAt: Timestamp.now(),
+                    createdBy: 'admin'
+                });
+
+                // Fee Breakdowns (100%)
+                statusDiv.innerHTML = '<i class="fas fa-spinner loading"></i> Creating fee breakdowns collection...';
+                progressFill.style.width = '95%';
+                await addDoc(collection(db, 'feeBreakdowns'), {
+                    courseId: 'COURSE_001',
+                    courseName: 'Web Development Full Stack',
+                    division: 'lbs',
+                    totalFee: 50000,
+                    components: {
+                        admissionFee: 5000,
+                        courseFee: 35000,
+                        examFee: 3000,
+                        materialFee: 5000,
+                        labFee: 0,
+                        certificateFee: 2000,
+                        otherFees: []
+                    },
+                    customCategories: [],
+                    isActive: true,
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now()
+                });
+
+                // Complete
+                progressFill.style.width = '100%';
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                statusDiv.className = 'status-message status-success show';
+                statusDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Setup Complete!</strong> All collections have been created successfully.
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>✅ installmentPlans collection</li>
+                        <li>✅ discounts collection</li>
+                        <li>✅ scholarships collection</li>
+                        <li>✅ lateFees collection</li>
+                        <li>✅ advancePayments collection</li>
+                        <li>✅ feeBreakdowns collection</li>
+                    </ul>
+                `;
+                
+                btn.innerHTML = '<i class="fas fa-check"></i> Setup Complete';
+                nextSteps.style.display = 'block';
+
+            } catch (error) {
+                console.error('Setup error:', error);
+                progressFill.style.width = '0%';
+                statusDiv.className = 'status-message status-error show';
+                statusDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Setup Failed:</strong> ${error.message}
+                    <p style="margin-top: 10px; font-size: 13px;">
+                        Please check:
+                        <ul style="margin-top: 5px; padding-left: 20px;">
+                            <li>Firebase configuration is correct</li>
+                            <li>Firestore database is enabled</li>
+                            <li>You have write permissions</li>
+                            <li>Internet connection is stable</li>
+                        </ul>
+                    </p>
+                `;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-redo"></i> Retry Setup';
+                setupRunning = false;
+            }
+        };
+    </script>
+</body>
+</html>

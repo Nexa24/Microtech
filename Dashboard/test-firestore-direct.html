@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Firestore Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e5e7eb;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(30, 30, 40, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 { color: #667eea; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover { opacity: 0.9; }
+        pre {
+            background: rgba(15, 15, 25, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .result { margin: 20px 0; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #fbbf24; }
+        .info { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Direct Firestore Connection Test</h1>
+        <p>This page directly tests the Firebase connection and data retrieval.</p>
+
+        <button onclick="testConnection()">1️⃣ Test Firebase Connection</button>
+        <button onclick="testReadCourses()">2️⃣ Read Courses Collection</button>
+        <button onclick="testWriteCourse()">3️⃣ Test Write (Add Sample)</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs,
+            addDoc,
+            Timestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { 
+            getAuth, 
+            signInAnonymously 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUJut5RTre7-dMnZa1F7aMUgYMz3xN06Y",
+            authDomain: "microtech-88235.firebaseapp.com",
+            projectId: "microtech-88235",
+            storageBucket: "microtech-88235.appspot.com",
+            messagingSenderId: "156750699730",
+            appId: "1:156750699730:web:5ec11e8b5af90a21a26159"
+        };
+
+        let app, db, auth;
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(title, content, type = 'info') {
+            const result = document.createElement('div');
+            result.className = 'result';
+            result.innerHTML = `
+                <h3 class="${type}">${title}</h3>
+                <pre>${typeof content === 'object' ? JSON.stringify(content, null, 2) : content}</pre>
+            `;
+            resultsDiv.appendChild(result);
+        }
+
+        window.testConnection = async function() {
+            try {
+                addResult('🔄 Initializing Firebase...', 'Starting initialization...', 'info');
+                
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                addResult('✅ Firebase Initialized', {
+                    projectId: firebaseConfig.projectId,
+                    appName: app.name,
+                    firestoreType: db.type
+                }, 'success');
+
+                // Try anonymous sign in
+                try {
+                    const userCred = await signInAnonymously(auth);
+                    addResult('✅ Anonymous Auth Success', {
+                        uid: userCred.user.uid,
+                        isAnonymous: userCred.user.isAnonymous
+                    }, 'success');
+                } catch (authError) {
+                    addResult('⚠️ Anonymous Auth Failed (may not be enabled)', authError.message, 'warning');
+                }
+
+            } catch (error) {
+                addResult('❌ Firebase Initialization Failed', {
+                    error: error.message,
+                    code: error.code,
+                    stack: error.stack
+                }, 'error');
+            }
+        };
+
+        window.testReadCourses = async function() {
+            try {
+                if (!db) {
+                    addResult('❌ Database Not Initialized', 'Run Test 1 first', 'error');
+                    return;
+                }
+
+                addResult('🔄 Reading Courses Collection...', 'Fetching data...', 'info');
+
+                const coursesRef = collection(db, 'courses');
+                const querySnapshot = await getDocs(coursesRef);
+
+                addResult('📊 Query Results', {
+                    totalDocuments: querySnapshot.size,
+                    isEmpty: querySnapshot.empty
+                }, 'info');
+
+                if (querySnapshot.empty) {
+                    addResult('⚠️ No Courses Found', 'The courses collection is empty', 'warning');
+                } else {
+                    const courses = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        courses.push({
+                            id: doc.id,
+                            ...data
+                        });
+                    });
+
+                    addResult('✅ Courses Retrieved Successfully', courses, 'success');
+                }
+
+            } catch (error) {
+                addResult('❌ Error Reading Courses', {
+                    error: error.message,
+                    code: error.code,
+                    details: 'This might be a permissions issue. Check Firestore rules.',
+                    stack: error.stack
+                }, 'error');
+            }
+        };
+
+        window.testWriteCourse = async function() {
+            try {
+                if (!db) {
+                    addResult('❌ Database Not Initialized', 'Run Test 1 first', 'error');
+                    return;
+                }
+
+                addResult('🔄 Adding Test Course...', 'Creating document...', 'info');
+
+                const testCourse = {
+                    name: 'Test Course ' + new Date().toLocaleTimeString(),
+                    division: 'CAPT',
+                    duration: 6,
+                    totalFee: 50000,
+                    admissionFee: 5000,
+                    status: 'Active',
+                    description: 'This is a test course created by the diagnostic tool',
+                    providers: ['Test Provider'],
+                    studentsEnrolled: [],
+                    courseID: 'TEST-' + Date.now(),
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now()
+                };
+
+                const docRef = await addDoc(collection(db, 'courses'), testCourse);
+
+                addResult('✅ Test Course Added Successfully', {
+                    documentId: docRef.id,
+                    courseData: testCourse
+                }, 'success');
+
+            } catch (error) {
+                addResult('❌ Error Adding Course', {
+                    error: error.message,
+                    code: error.code,
+                    details: 'This might be a permissions issue. Check Firestore rules.',
+                    stack: error.stack
+                }, 'error');
+            }
+        };
+
+        window.clearResults = function() {
+            resultsDiv.innerHTML = '';
+        };
+
+        // Auto-initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            addResult('ℹ️ Ready', 'Click buttons above to test Firebase connection', 'info');
+        });
+    </script>
+</body>
+</html>

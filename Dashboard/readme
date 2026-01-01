@@ -1,0 +1,71 @@
+Create a complete **Fee Management Module** for the MicroTech Admin Panel.
+
+**Tech Stack:**
+- Frontend: HTML, CSS, JavaScript
+- Backend: Firebase Firestore
+- Authentication: Firebase Authentication (role-based access)
+
+**Modules to Include:**
+
+1. **Fee Collection Form**
+   - Input fields: studentID, studentName, division (CAPT/LBS/Gama), course, paymentMode, amountPaid, totalFee, balance, nextDueDate, counselorID.
+   - Auto-generate transactionID and receiptNo.
+   - Store records in Firestore under a `fees` collection.
+   - Show toast for success/failure.
+
+2. **Fee Summary Table**
+   - Fetch and display all fee records from Firestore.
+   - Search and filter by:
+     - Student name or ID
+     - Division (CAPT, LBS, Gama)
+     - Payment status (Paid, Pending, Partial)
+     - Date range
+   - Display total collected amount and pending balance.
+
+3. **Pending Fee Reminders**
+   - Identify students with pending balances.
+   - Button to “Send Reminder” (dummy WhatsApp/email function placeholder).
+   - Store reminder logs for each student.
+
+4. **Receipt Generation**
+   - Generate a printable or downloadable PDF receipt with:
+     - Institute name/logo
+     - Student name, course, division
+     - Payment details (amount, date, mode)
+     - Receipt ID and signature field
+
+5. **Reports & Analytics**
+   - Show total revenue by:
+     - Division (CAPT, LBS, Gama)
+     - Payment mode (Cash, UPI, Bank, Card)
+   - Display revenue charts using Chart.js or Google Charts.
+   - Export report as CSV or PDF.
+
+6. **Refunds / Adjustments**
+   - Allow admin to issue refunds.
+   - Record reason, date, and amount refunded.
+   - Reflect adjustment in student’s fee history.
+
+7. **Role-based Access Control**
+   - Admin: Full access (add/edit/delete/report)
+   - Counselor: Add/view fees for their assigned students
+   - Teacher: View-only access for assigned students
+   - Student: Can view their own fee history and receipts only
+
+8. **Design & UI**
+   - Dark theme, clean layout (match MicroTech panel style)
+   - Responsive and mobile-friendly
+   - Tabs for: Fee Collection, Fee Summary, Reports, Settings
+   - Use modals for add/edit fee entries
+
+**Database Structure:**
+Collection: `fees`
+Document fields:
+studentID, studentName, division, course, paymentMode, amountPaid, totalFee, balance, paymentDate, receiptNo, counselorID, status, nextDueDate, createdAt, updatedAt
+
+**Additional Requirements:**
+- Real-time Firestore updates
+- Input validation
+- Toast/alert notifications
+- Option to export all fee data to Excel/PDF
+- Clean modular code with comments

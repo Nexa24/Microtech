@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize Advanced Fee Collections - Microtech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .collection-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .collection-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .collection-card i {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .collection-card h4 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .collection-card .count {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.exists {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.empty {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn i {
+            font-size: 18px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .log-container.show {
+            display: block;
+        }
+
+        .log-line {
+            margin-bottom: 5px;
+            line-height: 1.6;
+        }
+
+        .log-success { color: #4ec9b0; }
+        .log-error { color: #f48771; }
+        .log-warning { color: #dcdcaa; }
+        .log-info { color: #9cdcfe; }
+
+        .schema-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .schema-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .schema-list {
+            list-style: none;
+        }
+
+        .schema-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        .schema-list li:last-child {
+            border-bottom: none;
+        }
+
+        .schema-list strong {
+            color: #667eea;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-database"></i> Advanced Fee Collections Setup</h1>
+        <p class="subtitle">Initialize Firebase collections for advanced fee management system</p>
+
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> What This Does</h3>
+            <p>
+                This tool initializes 9 Firebase collections required for the Advanced Fee Management System.
+                It will create default late fee rules for each division (GAMA, LBS, CAPT) and 10 pre-built 
+                fee category templates (Admission, Exam, Lab, Library, Transport, etc.).
+            </p>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" id="init-btn" onclick="initializeCollections()">
+                <i class="fas fa-rocket"></i>
+                Initialize Collections
+            </button>
+            <button class="btn btn-secondary" onclick="checkStatus()">
+                <i class="fas fa-sync"></i>
+                Check Status
+            </button>
+        </div>
+
+        <div id="collections-container"></div>
+
+        <div class="log-container" id="log-container"></div>
+
+        <div class="schema-section">
+            <h3><i class="fas fa-file-code"></i> Collections Overview</h3>
+            <ul class="schema-list">
+                <li><strong>installmentPlans</strong> <span>Payment schedules and installment tracking</span></li>
+                <li><strong>discounts</strong> <span>Student discount records</span></li>
+                <li><strong>scholarships</strong> <span>Scholarship programs</span></li>
+                <li><strong>lateFees</strong> <span>Late fee calculations and records</span></li>
+                <li><strong>lateFeeRules</strong> <span>Division-specific late fee rules</span></li>
+                <li><strong>advancePayments</strong> <span>Advance payment tracking</span></li>
+                <li><strong>feeBreakdowns</strong> <span>Course fee breakdown templates</span></li>
+                <li><strong>studentFeeBreakdowns</strong> <span>Applied fee breakdowns per student</span></li>
+                <li><strong>feeCategories</strong> <span>Custom fee category definitions</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            initializeAllCollections, 
+            checkCollectionsExist, 
+            getCollectionStats,
+            COLLECTIONS 
+        } from './js/fee-advanced-collections-setup.js';
+
+        let logContainer = document.getElementById('log-container');
+        
+        function log(message, type = 'info') {
+            logContainer.classList.add('show');
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            line.textContent = message;
+            logContainer.appendChild(line);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLog() {
+            logContainer.innerHTML = '';
+            logContainer.classList.remove('show');
+        }
+
+        window.initializeCollections = async function() {
+            const btn = document.getElementById('init-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+            
+            clearLog();
+            log('🚀 Starting initialization process...', 'info');
+            
+            // Override console.log to capture logs
+            const originalLog = console.log;
+            console.log = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('✅')) {
+                    log(message, 'success');
+                } else if (message.includes('❌')) {
+                    log(message, 'error');
+                } else if (message.includes('⚠️')) {
+                    log(message, 'warning');
+                } else {
+                    log(message, 'info');
+                }
+                originalLog.apply(console, args);
+            };
+            
+            try {
+                const result = await initializeAllCollections();
+                
+                if (result) {
+                    log('', 'info');
+                    log('🎉 INITIALIZATION COMPLETE!', 'success');
+                    log('✅ All collections are ready to use', 'success');
+                    log('', 'info');
+                    log('📝 Next Steps:', 'info');
+                    log('1. Navigate to fee-advanced.html', 'info');
+                    log('2. Start creating installment plans, discounts, etc.', 'info');
+                    log('3. Check QUICK_START_GUIDE.md for usage instructions', 'info');
+                    
+                    setTimeout(() => {
+                        checkStatus();
+                    }, 1000);
+                }
+            } catch (error) {
+                log('❌ Error during initialization: ' + error.message, 'error');
+                console.error(error);
+            } finally {
+                console.log = originalLog;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-rocket"></i> Initialize Collections';
+            }
+        };
+
+        window.checkStatus = async function() {
+            clearLog();
+            log('🔍 Checking collection status...', 'info');
+            
+            try {
+                const stats = await checkCollectionsExist();
+                
+                const container = document.getElementById('collections-container');
+                container.innerHTML = '<div class="collections-grid"></div>';
+                const grid = container.querySelector('.collections-grid');
+                
+                const icons = {
+                    installmentPlans: 'fa-calendar-alt',
+                    discounts: 'fa-tags',
+                    scholarships: 'fa-graduation-cap',
+                    lateFees: 'fa-clock',
+                    lateFeeRules: 'fa-ruler',
+                    advancePayments: 'fa-coins',
+                    feeBreakdowns: 'fa-chart-pie',
+                    studentFeeBreakdowns: 'fa-user-graduate',
+                    feeCategories: 'fa-list'
+                };
+                
+                for (const [collectionName, data] of Object.entries(stats)) {
+                    const card = document.createElement('div');
+                    card.className = 'collection-card';
+                    card.innerHTML = `
+                        <i class="fas ${icons[collectionName] || 'fa-database'}"></i>
+                        <h4>${collectionName}</h4>
+                        <div class="count">${data.count} documents</div>
+                        <div style="margin-top: 8px;">
+                            <span class="status ${data.exists ? 'exists' : 'empty'}">
+                                ${data.exists ? 'Exists' : 'Empty'}
+                            </span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                    
+                    log(`${data.exists ? '✓' : '✗'} ${collectionName}: ${data.count} documents`, 
+                        data.exists ? 'success' : 'warning');
+                }
+                
+                log('', 'info');
+                log('✅ Status check complete', 'success');
+                
+            } catch (error) {
+                log('❌ Error checking status: ' + error.message, 'error');
+                console.error(error);
+            }
+        };
+
+        // Auto-check status on load
+        window.addEventListener('load', () => {
+            checkStatus();
+        });
+    </script>
+</body>
+</html>

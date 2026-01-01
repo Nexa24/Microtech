@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Write Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+        .success {
+            border-left-color: #4CAF50;
+            background: #e8f5e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Write Test</h1>
+        <p>This will test if we can write to Firebase Firestore.</p>
+        
+        <button onclick="testFirebaseWrite()">Test Firebase Write</button>
+        <button onclick="testFirebaseRead()">Test Firebase Read</button>
+        <button onclick="clearLog()">Clear Log</button>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase.js';
+        import { 
+            collection, 
+            addDoc, 
+            getDocs,
+            doc,
+            setDoc,
+            Timestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const logDiv = document.getElementById('log');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            logDiv.textContent += logMessage;
+            
+            if (type === 'error') {
+                logDiv.classList.add('error');
+            } else if (type === 'success') {
+                logDiv.classList.remove('error');
+                logDiv.classList.add('success');
+            }
+            
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        window.clearLog = function() {
+            logDiv.textContent = '';
+            logDiv.classList.remove('error', 'success');
+        };
+
+        window.testFirebaseWrite = async function() {
+            log('=== Starting Firebase Write Test ===');
+            
+            try {
+                log('Step 1: Checking Firebase connection...');
+                if (!db) {
+                    throw new Error('Firebase db is not initialized');
+                }
+                log('✓ Firebase db exists', 'success');
+
+                log('Step 2: Attempting to write to "test_collection"...');
+                const testData = {
+                    message: 'Hello from Advanced Fee System',
+                    timestamp: Timestamp.now(),
+                    testNumber: Math.random(),
+                    createdAt: new Date().toISOString()
+                };
+                
+                log(`Writing data: ${JSON.stringify(testData, null, 2)}`);
+                
+                const docRef = await addDoc(collection(db, 'test_collection'), testData);
+                
+                log(`✓ SUCCESS! Document written with ID: ${docRef.id}`, 'success');
+                log('');
+                log('Now trying to write to advanced fee collections...');
+                
+                // Test installmentPlans
+                log('Writing to installmentPlans...');
+                const installmentDoc = await addDoc(collection(db, 'installmentPlans'), {
+                    studentId: 'TEST_001',
+                    studentName: 'Test Student',
+                    totalFee: 10000,
+                    createdAt: Timestamp.now(),
+                    status: 'test'
+                });
+                log(`✓ installmentPlans: ${installmentDoc.id}`, 'success');
+
+                // Test discounts
+                log('Writing to discounts...');
+                const discountDoc = await addDoc(collection(db, 'discounts'), {
+                    studentId: 'TEST_002',
+                    discountAmount: 500,
+                    createdAt: Timestamp.now(),
+                    status: 'test'
+                });
+                log(`✓ discounts: ${discountDoc.id}`, 'success');
+
+                log('');
+                log('🎉 ALL TESTS PASSED! Firebase write is working correctly!', 'success');
+                
+            } catch (error) {
+                log('');
+                log(`❌ ERROR: ${error.message}`, 'error');
+                log(`Error code: ${error.code}`);
+                log(`Full error: ${JSON.stringify(error, null, 2)}`);
+                log('');
+                log('Common fixes:');
+                log('1. Check Firestore Rules (allow read, write: if true;)');
+                log('2. Check Firebase configuration');
+                log('3. Ensure Firestore is enabled in Firebase Console');
+            }
+        };
+
+        window.testFirebaseRead = async function() {
+            log('=== Starting Firebase Read Test ===');
+            
+            try {
+                log('Reading from test_collection...');
+                const querySnapshot = await getDocs(collection(db, 'test_collection'));
+                
+                if (querySnapshot.empty) {
+                    log('⚠ No documents found. Run Write Test first.', 'error');
+                } else {
+                    log(`✓ Found ${querySnapshot.size} document(s)`, 'success');
+                    querySnapshot.forEach((doc) => {
+                        log(`  Document ID: ${doc.id}`);
+                        log(`  Data: ${JSON.stringify(doc.data(), null, 2)}`);
+                    });
+                }
+                
+            } catch (error) {
+                log(`❌ READ ERROR: ${error.message}`, 'error');
+                log(`Error code: ${error.code}`);
+            }
+        };
+
+        // Auto-run test on load
+        log('Page loaded. Click "Test Firebase Write" to begin.');
+    </script>
+</body>
+</html>

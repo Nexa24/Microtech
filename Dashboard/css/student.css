@@ -635,6 +635,22 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
     object-fit: cover;
 }
 
+/* Student ID Badge */
+.student-id-badge {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+}
+
 /* Status Badges */
 .badge {
     display: inline-block;

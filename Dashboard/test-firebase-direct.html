@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Direct Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a2e;
+            color: #00ff00;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #000;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+        }
+        h1 { color: #00ff00; text-align: center; }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #00ff00;
+            border-radius: 4px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffff00; }
+        .info { color: #00ffff; }
+        pre {
+            background: #111;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        button:hover { background: #00cc00; }
+        #output { margin-top: 20px; }
+        .log-entry { margin: 5px 0; padding: 5px; border-left: 3px solid #00ff00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 FIREBASE DIRECT CONNECTION TEST 🔥</h1>
+        <p class="info">This will test direct Firebase connection and data fetching</p>
+
+        <div class="test-section">
+            <h2>Step 1: Initialize Firebase</h2>
+            <button onclick="testFirebaseInit()">Test Firebase Initialization</button>
+            <div id="init-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 2: Test Connection</h2>
+            <button onclick="testConnection()">Test Firestore Connection</button>
+            <div id="connection-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 3: Fetch Courses (Simple)</h2>
+            <button onclick="fetchCoursesSimple()">Fetch Courses (No Query)</button>
+            <div id="fetch-simple-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 4: Fetch Courses (With OrderBy)</h2>
+            <button onclick="fetchCoursesWithOrder()">Fetch Courses (With OrderBy)</button>
+            <div id="fetch-order-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 5: Check Security Rules</h2>
+            <button onclick="testSecurityRules()">Test Read Permissions</button>
+            <div id="security-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Console Output:</h2>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs,
+            query,
+            orderBy
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { 
+            getAuth,
+            signInAnonymously
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUJut5RTre7-dMnZa1F7aMUgYMz3xN06Y",
+            authDomain: "microtech-88235.firebaseapp.com",
+            projectId: "microtech-88235",
+            storageBucket: "microtech-88235.appspot.com",
+            messagingSenderId: "156750699730",
+            appId: "1:156750699730:web:5ec11e8b5af90a21a26159"
+        };
+
+        let app, db, auth;
+        const outputDiv = document.getElementById('output');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            outputDiv.insertBefore(entry, outputDiv.firstChild);
+            console.log(message);
+        }
+
+        function displayInSection(sectionId, content, type = 'info') {
+            const section = document.getElementById(sectionId);
+            const pre = document.createElement('pre');
+            pre.className = type;
+            pre.textContent = content;
+            section.innerHTML = '';
+            section.appendChild(pre);
+        }
+
+        window.testFirebaseInit = async function() {
+            try {
+                log('🔄 Initializing Firebase...', 'info');
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                log('✅ Firebase initialized successfully!', 'success');
+                displayInSection('init-output', `✅ SUCCESS!
+App Name: ${app.name}
+Project ID: ${firebaseConfig.projectId}
+Database: Firestore Connected
+Auth: Initialized`, 'success');
+            } catch (error) {
+                log(`❌ Firebase init failed: ${error.message}`, 'error');
+                displayInSection('init-output', `❌ ERROR: ${error.message}\n\nStack: ${error.stack}`, 'error');
+            }
+        };
+
+        window.testConnection = async function() {
+            try {
+                if (!db) {
+                    await testFirebaseInit();
+                }
+                
+                log('🔄 Testing Firestore connection...', 'info');
+                const coursesRef = collection(db, 'courses');
+                log(`✅ Collection reference created: ${coursesRef.path}`, 'success');
+                
+                displayInSection('connection-output', `✅ CONNECTION SUCCESS!
+Collection Path: ${coursesRef.path}
+Collection ID: ${coursesRef.id}
+Firestore Type: ${coursesRef.type}`, 'success');
+            } catch (error) {
+                log(`❌ Connection test failed: ${error.message}`, 'error');
+                displayInSection('connection-output', `❌ ERROR: ${error.message}\n\nCode: ${error.code}\n\nStack: ${error.stack}`, 'error');
+            }
+        };
+
+        window.fetchCoursesSimple = async function() {
+            try {
+                if (!db) await testFirebaseInit();
+                
+                log('🔄 Fetching courses (simple query)...', 'info');
+                const coursesRef = collection(db, 'courses');
+                const snapshot = await getDocs(coursesRef);
+                
+                log(`✅ Query executed! Found ${snapshot.size} documents`, 'success');
+                
+                let output = `✅ FETCH SUCCESS!\n\n`;
+                output += `Total Documents: ${snapshot.size}\n`;
+                output += `Empty: ${snapshot.empty}\n\n`;
+                
+                if (snapshot.empty) {
+                    output += `⚠️ No documents found in 'courses' collection\n`;
+                    output += `Check Firebase Console to verify documents exist`;
+                } else {
+                    output += `DOCUMENTS:\n${'='.repeat(50)}\n\n`;
+                    snapshot.forEach((doc, index) => {
+                        const data = doc.data();
+                        output += `📄 Document ${index + 1}:\n`;
+                        output += `   ID: ${doc.id}\n`;
+                        output += `   Data: ${JSON.stringify(data, null, 2)}\n\n`;
+                    });
+                }
+                
+                displayInSection('fetch-simple-output', output, 'success');
+            } catch (error) {
+                log(`❌ Fetch failed: ${error.message}`, 'error');
+                displayInSection('fetch-simple-output', `❌ ERROR: ${error.message}\n\nCode: ${error.code}\n\nDetails: ${error.stack}`, 'error');
+            }
+        };
+
+        window.fetchCoursesWithOrder = async function() {
+            try {
+                if (!db) await testFirebaseInit();
+                
+                log('🔄 Fetching courses (with orderBy)...', 'info');
+                const coursesRef = collection(db, 'courses');
+                const q = query(coursesRef, orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+                
+                log(`✅ OrderBy query executed! Found ${snapshot.size} documents`, 'success');
+                
+                let output = `✅ ORDERED FETCH SUCCESS!\n\n`;
+                output += `Total Documents: ${snapshot.size}\n\n`;
+                
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    output += `📄 Document ${index + 1}:\n`;
+                    output += `   ID: ${doc.id}\n`;
+                    output += `   Name: ${data.name}\n`;
+                    output += `   Division: ${data.division}\n`;
+                    output += `   Created: ${data.createdAt}\n\n`;
+                });
+                
+                displayInSection('fetch-order-output', output, 'success');
+            } catch (error) {
+                log(`❌ OrderBy fetch failed: ${error.message}`, 'error');
+                let errorOutput = `❌ ORDERBY ERROR: ${error.message}\n\n`;
+                
+                if (error.code === 'failed-precondition') {
+                    errorOutput += `⚠️ This error usually means:\n`;
+                    errorOutput += `1. Missing Firestore index\n`;
+                    errorOutput += `2. Some documents don't have 'createdAt' field\n\n`;
+                    errorOutput += `SOLUTION: Try the Simple Fetch instead (Step 3)`;
+                }
+                
+                errorOutput += `\n\nCode: ${error.code}\n\nStack: ${error.stack}`;
+                displayInSection('fetch-order-output', errorOutput, 'error');
+            }
+        };
+
+        window.testSecurityRules = async function() {
+            try {
+                if (!db) await testFirebaseInit();
+                if (!auth) auth = getAuth(app);
+                
+                log('🔄 Testing security rules...', 'info');
+                
+                let output = `🔒 SECURITY RULES TEST\n\n`;
+                output += `Current User: ${auth.currentUser ? auth.currentUser.email || auth.currentUser.uid : 'Not authenticated'}\n\n`;
+                
+                // Try to read without auth
+                try {
+                    const coursesRef = collection(db, 'courses');
+                    const snapshot = await getDocs(coursesRef);
+                    output += `✅ READ ACCESS: Granted (${snapshot.size} documents)\n`;
+                    output += `   Your Firestore rules allow reading without authentication\n`;
+                } catch (readError) {
+                    output += `❌ READ ACCESS: Denied\n`;
+                    output += `   Error: ${readError.message}\n`;
+                    output += `   Code: ${readError.code}\n\n`;
+                    
+                    if (readError.code === 'permission-denied') {
+                        output += `⚠️ Your Firestore rules require authentication\n`;
+                        output += `   Attempting anonymous sign-in...\n\n`;
+                        
+                        try {
+                            const userCred = await signInAnonymously(auth);
+                            output += `✅ Anonymous sign-in successful: ${userCred.user.uid}\n`;
+                            output += `   Try fetching courses again (Step 3)\n`;
+                        } catch (authError) {
+                            output += `❌ Anonymous sign-in failed: ${authError.message}\n`;
+                            output += `   You need to enable Anonymous Authentication in Firebase Console\n`;
+                        }
+                    }
+                }
+                
+                displayInSection('security-output', output, 'warning');
+            } catch (error) {
+                log(`❌ Security test failed: ${error.message}`, 'error');
+                displayInSection('security-output', `❌ ERROR: ${error.message}`, 'error');
+            }
+        };
+
+        // Auto-initialize on load
+        window.addEventListener('load', () => {
+            log('🌐 Test page loaded - Ready to test!', 'info');
+            log('👆 Click buttons above to run tests in sequence', 'info');
+        });
+    </script>
+</body>
+</html>

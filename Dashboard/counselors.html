@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MicroTech Center - Counselors</title>
     <link rel="stylesheet" href="admin-dashboard.css">
+    <link rel="stylesheet" href="css/counselors.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -56,6 +57,10 @@
                 <a href="fees" class="nav-item">
                     <i class="fas fa-credit-card nav-icon"></i>
                     <span class="nav-text">Fee Management</span>
+                </a>
+                <a href="receipt.html" class="nav-item">
+                    <i class="fas fa-receipt nav-icon"></i>
+                    <span class="nav-text">Receipt Management</span>
                 </a>
                 <a href="communication" class="nav-item">
                     <i class="fas fa-comments nav-icon"></i>
@@ -114,10 +119,27 @@
     </div>
 
                 <div class="header-right">
-                    <div class="notifications">
-                        <i class="fas fa-bell bell-icon"></i>
-                        <div class="notification-badge">3</div>
-    </div>
+                    <!-- Notifications Dropdown -->
+                    <div class="notifications" id="notifications-container">
+                        <div class="bell-icon" id="notification-bell">
+                            <i class="fas fa-bell"></i>
+                            <div class="notification-badge" id="notification-badge" style="display: none;">0</div>
+                        </div>
+                        
+                        <!-- Notifications Dropdown Panel -->
+                        <div class="notifications-dropdown" id="notifications-dropdown">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-all-read" id="mark-all-read">Mark all as read</button>
+                            </div>
+                            <div class="notifications-list" id="notifications-list">
+                                <!-- Notifications will be populated by JavaScript -->
+                            </div>
+                            <div class="notifications-footer">
+                                <a href="notifications.html" class="view-all-notifications">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="user-profile">
                         <div class="user-avatar">
@@ -133,18 +155,316 @@
   </div>
 
             <!-- Dashboard Content -->
-            <div class="dashboard-title">Counselors</div>
-            <div class="dashboard-subtitle">Manage counselors.</div>
+            <div class="dashboard-title">Counselor Management</div>
+            <div class="dashboard-subtitle">Manage inquiries, follow-ups, and admissions conversion</div>
 
-            <!-- Placeholder Content -->
-            <div style="padding: 20px;">
-                <h2>Counselors Content Goes Here</h2>
+            <!-- Analytics Cards -->
+            <div class="analytics-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Inquiries</div>
+                        <div class="stat-value" id="total-inquiries">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Converted</div>
+                        <div class="stat-value" id="converted-count">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Pending Follow-ups</div>
+                        <div class="stat-value" id="pending-followups">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Conversion Rate</div>
+                        <div class="stat-value" id="conversion-rate">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="action-left">
+                    <button class="btn btn-primary" onclick="openAddInquiryModal()">
+                        <i class="fas fa-plus"></i> Add New Inquiry
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportToCSV()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
+                <div class="action-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-inquiry" placeholder="Search by name, phone, email..." onkeyup="searchInquiries()">
+                    </div>
+                    <select id="filter-status" class="filter-select" onchange="filterInquiries()">
+                        <option value="">All Status</option>
+                        <option value="New">New</option>
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Converted">Converted</option>
+                        <option value="Not Interested">Not Interested</option>
+                    </select>
+                    <select id="filter-source" class="filter-select" onchange="filterInquiries()">
+                        <option value="">All Sources</option>
+                        <option value="Walk-in">Walk-in</option>
+                        <option value="Phone">Phone</option>
+                        <option value="Website">Website</option>
+                        <option value="Social Media">Social Media</option>
+                        <option value="Referral">Referral</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Inquiries Table -->
+            <div class="content-card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Interested Course(s)</th>
+                                <th>Source</th>
+                                <th>Status</th>
+                                <th>Next Follow-up</th>
+                                <th>Counselor</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiries-table-body">
+                            <tr>
+                                <td colspan="9" class="no-data">Loading inquiries...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Inquiry Modal -->
+    <div id="inquiry-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2 id="inquiry-modal-title">Add New Inquiry</h2>
+                <span class="close" onclick="closeInquiryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="inquiry-form">
+                    <input type="hidden" id="inquiry-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="inquiry-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone *</label>
+                            <input type="tel" id="inquiry-phone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="inquiry-email">
+                        </div>
+                        <div class="form-group">
+                            <label>Source *</label>
+                            <select id="inquiry-source" required>
+                                <option value="">Select Source</option>
+                                <option value="Walk-in">Walk-in</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Website">Website</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Referral">Referral</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="inquiry-address" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Interested Course(s) *</label>
+                        <div id="courses-checkbox-list" class="checkbox-list">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Status *</label>
+                            <select id="inquiry-status" required>
+                                <option value="New">New</option>
+                                <option value="Follow-up">Follow-up</option>
+                                <option value="Converted">Converted</option>
+                                <option value="Not Interested">Not Interested</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Next Follow-up Date</label>
+                            <input type="datetime-local" id="inquiry-followup-date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <textarea id="inquiry-remarks" rows="3"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeInquiryModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Inquiry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>Inquiry Details</h2>
+                <span class="close" onclick="closeDetailsModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="details-modal-body">
+                <!-- Will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Follow-up Modal -->
+    <div id="followup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Follow-up</h2>
+                <span class="close" onclick="closeFollowupModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="followup-form">
+                    <input type="hidden" id="followup-inquiry-id">
+                    <div class="form-group">
+                        <label>Follow-up Date & Time *</label>
+                        <input type="datetime-local" id="followup-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Update Status</label>
+                        <select id="followup-status">
+                            <option value="Follow-up">Follow-up</option>
+                            <option value="Not Interested">Not Interested</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Follow-up Remarks *</label>
+                        <textarea id="followup-remarks" rows="4" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeFollowupModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Follow-up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convert to Admission Modal -->
+    <div id="convert-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Convert to Admission</h2>
+                <span class="close" onclick="closeConvertModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="convert-form">
+                    <input type="hidden" id="convert-inquiry-id">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        This will create a new student record and mark the inquiry as converted.
+                    </div>
+                    <div class="form-group">
+                        <label>Selected Course(s) *</label>
+                        <div id="convert-courses-list"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Payment (₹)</label>
+                        <input type="number" id="convert-initial-payment" min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Mode</label>
+                        <select id="convert-payment-mode">
+                            <option value="">No Payment</option>
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Card</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Admission Notes</label>
+                        <textarea id="convert-notes" rows="3"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeConvertModal()">Cancel</button>
+                        <button type="submit" class="btn btn-success">Convert to Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert-modal" class="custom-alert-overlay" style="display: none;">
+        <div class="custom-alert-container">
+            <div class="custom-alert-icon" id="alert-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="custom-alert-content">
+                <h3 id="alert-title">Success</h3>
+                <p id="alert-message">Operation completed successfully!</p>
+            </div>
+            <div class="custom-alert-actions">
+                <button class="custom-alert-btn custom-alert-btn-primary" id="alert-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="custom-confirm-modal" class="custom-alert-overlay" style="display: none;">
+        <div class="custom-alert-container">
+            <div class="custom-alert-icon warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="custom-alert-content">
+                <h3 id="confirm-title">Confirm Action</h3>
+                <p id="confirm-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="custom-alert-actions">
+                <button class="custom-alert-btn custom-alert-btn-secondary" id="confirm-cancel-btn">Cancel</button>
+                <button class="custom-alert-btn custom-alert-btn-danger" id="confirm-ok-btn">Confirm</button>
             </div>
         </div>
     </div>
 
     <!-- Toast notification container -->
     <div id="toast-container" style="position:fixed;top:24px;right:24px;z-index:9999;"></div>
+    
     <script type="module" src="js/toast.js"></script>
     <script type="module" src="js/counselors.js"></script>
 </body>

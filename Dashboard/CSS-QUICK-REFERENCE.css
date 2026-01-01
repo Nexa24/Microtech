@@ -1,0 +1,230 @@
+/* ============================================
+   QUICK CSS REFERENCE - FEE MANAGEMENT
+   ============================================ */
+
+/* STATUS BADGES */
+.status-paid     → Green badge  (Fully paid)
+.status-partial  → Yellow badge (Partial payment)
+.status-pending  → Orange badge (Pending payment)
+
+/* BUTTONS */
+.btn-primary     → Blue    (#3B82F6)
+.btn-secondary   → Gray    (#374151)
+.btn-warning     → Orange  (#F59E0B)
+.btn-success     → Green   (#10B981)
+.btn-danger      → Red     (#EF4444)
+.btn-reset       → Gray    (#6B7280)
+.btn-icon        → Transparent with hover
+.btn-cancel      → Gray    (#6B7280)
+
+/* CARD VARIANTS */
+.card-primary    → Blue left border
+.card-warning    → Orange left border
+.card-blue       → Blue left border
+.card-green      → Green left border
+.card-orange     → Orange left border
+
+/* CARD COMPONENTS */
+.card-icon       → 48x48 colored icon container
+.card-content    → Content wrapper
+.card-value      → Large value (28px, bold)
+.card-subtitle   → Small gray text (12px)
+
+/* LAYOUT */
+.header-actions       → Button container (gap: 12px)
+.filter-section       → Filter bar container
+.filter-group         → Individual filter wrapper
+.charts-grid          → 2-column chart grid
+.chart-card           → Chart container
+.chart-wrapper        → Canvas wrapper (300px height)
+
+/* FORM */
+.form-row             → 2-column grid for inputs
+.form-group           → Single input wrapper
+.form-group.full-width → Spans both columns
+.form-actions         → Button container at bottom
+.fee-form             → Main form with gap
+
+/* MODAL */
+.modal                → Full screen overlay (blur)
+.modal-content        → Centered modal (slide-in animation)
+.modal-large          → 800px width variant
+
+/* AUTOCOMPLETE */
+.autocomplete-wrapper      → Position relative wrapper
+.autocomplete-results      → Dropdown container
+.autocomplete-item         → Individual result (hover effect)
+.autocomplete-item-name    → Bold white name
+.autocomplete-item-details → Small gray details
+
+/* INPUTS */
+.search-input      → Search field styling
+.filter-select     → Dropdown styling
+.filter-input      → Date input styling
+.form-control      → Standard input
+
+/* TABLE */
+.fees-table        → Main table class
+.action-buttons    → Button container in table row
+
+
+/* ============================================
+   COLOR PALETTE
+   ============================================ */
+
+/* PRIMARY COLORS */
+Blue:    #3B82F6  (Primary actions, links)
+Green:   #10B981  (Success, paid status)
+Orange:  #F59E0B  (Warning, pending)
+Yellow:  #FBBF24  (Partial payment)
+Red:     #EF4444  (Danger, delete)
+Gray:    #6B7280  (Neutral, cancel)
+
+/* BACKGROUND COLORS */
+Dark BG:      #1A1D29  (Main background)
+Card BG:      #2A2F3E  (Cards, tables)
+Border:       #374151  (Borders)
+Hover:        #4B5563  (Hover states)
+
+/* TEXT COLORS */
+White:        #FFFFFF  (Headings)
+Light Gray:   #D1D5DB  (Body text)
+Medium Gray:  #9CA3AF  (Subtitles, placeholders)
+
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+Desktop:    1024px+ (Full sidebar, 2-column grids)
+Tablet:     768px   (Collapsed sidebar, 1-column grids)
+Mobile:     480px   (Stack everything, smaller text)
+
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes modalSlideIn
+- From: opacity 0, translateY(-20px)
+- To: opacity 1, translateY(0)
+- Duration: 0.3s ease
+
+Button hover:
+- transform: translateY(-1px)
+- transition: all 0.3s ease
+
+Card hover:
+- transform: translateY(-2px)
+- box-shadow: 0 8px 25px rgba(0,0,0,0.3)
+
+
+/* ============================================
+   Z-INDEX LAYERS
+   ============================================ */
+
+z-index: 1000   → Sidebar
+z-index: 10000  → Modal
+z-index: 1000   → Autocomplete dropdown
+z-index: 9999   → Toast notifications
+
+
+/* ============================================
+   USAGE EXAMPLES
+   ============================================ */
+
+/* Status Badge */
+<span class="status-badge status-paid">Paid</span>
+<span class="status-badge status-partial">Partial</span>
+<span class="status-badge status-pending">Pending</span>
+
+/* Buttons */
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-warning">Warning</button>
+<button class="btn-icon"><i class="fas fa-trash"></i></button>
+
+/* Analytics Card */
+<div class="card card-primary">
+  <div class="card-icon"><i class="fas fa-coins"></i></div>
+  <div class="card-content">
+    <h4>Total Revenue</h4>
+    <p class="card-value">₹50,000</p>
+    <small class="card-subtitle">This month</small>
+  </div>
+</div>
+
+/* Form Row */
+<div class="form-row">
+  <div class="form-group">
+    <label>Student ID</label>
+    <input type="text" class="form-control">
+  </div>
+  <div class="form-group">
+    <label>Student Name</label>
+    <input type="text" class="form-control">
+  </div>
+</div>
+
+/* Autocomplete */
+<div class="form-group">
+  <label>Student Name</label>
+  <input type="text" id="student-name">
+  <div class="autocomplete-results" id="student-autocomplete">
+    <div class="autocomplete-item">
+      <div class="autocomplete-item-name">John Doe</div>
+      <div class="autocomplete-item-details">ID: STU001 | Division: GAMA</div>
+    </div>
+  </div>
+</div>
+
+/* Action Buttons in Table */
+<td class="action-buttons">
+  <button class="btn-icon" title="Receipt">
+    <i class="fas fa-receipt"></i>
+  </button>
+  <button class="btn-icon" title="Reminder">
+    <i class="fas fa-bell"></i>
+  </button>
+  <button class="btn-icon btn-danger" title="Delete">
+    <i class="fas fa-trash"></i>
+  </button>
+</td>
+
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar              → 6px width
+::-webkit-scrollbar-track        → #1A1D29
+::-webkit-scrollbar-thumb        → #374151 (rounded 3px)
+::-webkit-scrollbar-thumb:hover  → #4B5563
+
+
+/* ============================================
+   FOCUS STATES
+   ============================================ */
+
+All inputs/selects on focus:
+- border-color: #3B82F6
+- box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)
+- outline: none
+- transition: all 0.3s ease
+
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px)
+- Sidebar: transform: translateX(-100%)
+- Main content: margin-left: 0
+- Analytics cards: grid-template-columns: 1fr
+- Charts grid: Single column
+- Form rows: Single column
+- Filter section: Stack vertically
+
+@media (max-width: 480px)
+- Padding reduced: 16px
+- Page title: 24px (from 32px)
+- Top header: flex-direction: column

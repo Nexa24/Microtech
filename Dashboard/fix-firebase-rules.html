@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix: Data Not Being Stored - Firebase Rules</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { opacity: 0.9; font-size: 16px; }
+        .content { padding: 40px; }
+        .problem-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .problem-box h2 { color: #856404; margin-bottom: 10px; }
+        .solution-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .solution-box h2 { color: #0c5460; margin-bottom: 15px; }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            display: block;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .inline-code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #d63384;
+            display: inline;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .warning h4 { color: #721c24; margin-bottom: 10px; }
+        .success {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success h4 { color: #155724; margin-bottom: 10px; }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.3s ease;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        ol, ul { margin-left: 25px; line-height: 1.8; }
+        li { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Firebase Rules Fix</h1>
+            <p>Data Not Being Stored - Solution Guide</p>
+        </div>
+        
+        <div class="content">
+            <div class="problem-box">
+                <h2>❌ Problem Identified</h2>
+                <p><strong>Your Firebase Firestore rules are blocking writes to the new advanced fee collections.</strong></p>
+                <p style="margin-top: 10px;">The rules file has a default deny-all at the end, and the new collections (installmentPlans, discounts, etc.) don't have explicit permissions defined.</p>
+            </div>
+
+            <div class="solution-box">
+                <h2>✅ Solution</h2>
+                <p>Update the Firestore rules in Firebase Console to allow read/write access to the advanced fee collections.</p>
+            </div>
+
+            <div class="step">
+                <h3>
+                    <span class="step-number">1</span>
+                    Open Firebase Console
+                </h3>
+                <ol>
+                    <li>Go to: <a href="https://console.firebase.google.com/" target="_blank">https://console.firebase.google.com/</a></li>
+                    <li>Select your project: <strong>microtech-88235</strong></li>
+                    <li>Click <strong>"Firestore Database"</strong> in the left sidebar</li>
+                    <li>Click the <strong>"Rules"</strong> tab at the top</li>
+                </ol>
+                <a href="https://console.firebase.google.com/project/microtech-88235/firestore/rules" target="_blank" class="btn">
+                    🚀 Open Firebase Rules Directly
+                </a>
+            </div>
+
+            <div class="step">
+                <h3>
+                    <span class="step-number">2</span>
+                    Add Collection Rules
+                </h3>
+                <p><strong>Find this line near the bottom of your rules:</strong></p>
+                <code>match /{document=**} {
+  allow read, write: if false;
+}</code>
+                
+                <p style="margin-top: 20px;"><strong>Add these rules BEFORE that line:</strong></p>
+                
+                <div class="warning">
+                    <h4>⚠️ Choose Based on Your Setup:</h4>
+                    <ul>
+                        <li><strong>Option A:</strong> If you have authentication (users log in)</li>
+                        <li><strong>Option B:</strong> If testing without authentication (temporary only!)</li>
+                    </ul>
+                </div>
+
+                <h4 style="margin-top: 25px; color: #28a745;">✅ Option A: With Authentication (Recommended)</h4>
+                <code>// Advanced Fee Management Collections
+match /installmentPlans/{plan} {
+  allow read, write: if request.auth != null;
+}
+
+match /discounts/{discount} {
+  allow read, write: if request.auth != null;
+}
+
+match /scholarships/{scholarship} {
+  allow read, write: if request.auth != null;
+}
+
+match /lateFees/{lateFee} {
+  allow read, write: if request.auth != null;
+}
+
+match /advancePayments/{payment} {
+  allow read, write: if request.auth != null;
+}
+
+match /feeBreakdowns/{breakdown} {
+  allow read, write: if request.auth != null;
+}
+
+match /feeCategories/{category} {
+  allow read, write: if request.auth != null;
+}
+
+match /studentFeeBreakdowns/{breakdown} {
+  allow read, write: if request.auth != null;
+}
+
+match /test_collection/{doc} {
+  allow read, write: if request.auth != null;
+}</code>
+
+                <h4 style="margin-top: 25px; color: #ffc107;">⚠️ Option B: No Authentication (Testing Only - NOT SECURE!)</h4>
+                <code>// TEMPORARY - REMOVE AFTER TESTING!
+match /installmentPlans/{plan} {
+  allow read, write: if true;
+}
+
+match /discounts/{discount} {
+  allow read, write: if true;
+}
+
+match /scholarships/{scholarship} {
+  allow read, write: if true;
+}
+
+match /lateFees/{lateFee} {
+  allow read, write: if true;
+}
+
+match /advancePayments/{payment} {
+  allow read, write: if true;
+}
+
+match /feeBreakdowns/{breakdown} {
+  allow read, write: if true;
+}
+
+match /feeCategories/{category} {
+  allow read, write: if true;
+}
+
+match /studentFeeBreakdowns/{breakdown} {
+  allow read, write: if true;
+}
+
+match /test_collection/{doc} {
+  allow read, write: if true;
+}</code>
+            </div>
+
+            <div class="step">
+                <h3>
+                    <span class="step-number">3</span>
+                    Publish the Rules
+                </h3>
+                <ol>
+                    <li>Click the <strong>"Publish"</strong> button at the top of the rules editor</li>
+                    <li>Confirm when prompted</li>
+                    <li>Wait for "Rules published successfully" message</li>
+                </ol>
+            </div>
+
+            <div class="success">
+                <h4>🎉 Rules Updated!</h4>
+                <p>Now test the system:</p>
+                <ol>
+                    <li>Open <span class="inline-code">test-firebase-write.html</span> and click "Test Firebase Write"</li>
+                    <li>You should see: ✓ SUCCESS! Document written</li>
+                    <li>Then run <span class="inline-code">setup-fee-advanced.html</span> to initialize collections</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="test-firebase-write.html" class="btn">
+                    🧪 Test Firebase Write
+                </a>
+                <a href="setup-fee-advanced.html" class="btn btn-secondary">
+                    🚀 Run Setup
+                </a>
+            </div>
+
+            <div class="warning" style="margin-top: 30px;">
+                <h4>🔐 Important Security Note</h4>
+                <p>If you used Option B (allow if true), remember to switch to proper authentication rules after testing! Option B allows anyone on the internet to read/write your database.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

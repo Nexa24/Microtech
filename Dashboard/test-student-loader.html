@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Loader Test - Micro Tech Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .status.loading {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #1e293b;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .log-container {
+            background: #1e293b;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            line-height: 1.6;
+        }
+
+        .log-timestamp {
+            color: #94a3b8;
+        }
+
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .student-item {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .student-id {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .student-division {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .collection-info {
+            background: #eff6ff;
+            border: 1px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .collection-info h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Student Loader Test Page</h1>
+        
+        <div id="status" class="status loading">
+            <div class="spinner"></div>
+            <span>Initializing student loader...</span>
+        </div>
+
+        <div class="collection-info">
+            <h3>Collection Detection</h3>
+            <p id="collection-status">Checking which collection contains students...</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value" id="total-students">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">CAPT</div>
+                <div class="stat-value" id="capt-count">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">LBS</div>
+                <div class="stat-value" id="lbs-count">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gama</div>
+                <div class="stat-value" id="gama-count">-</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button class="btn" onclick="testLoad()">🔄 Test Load</button>
+            <button class="btn" onclick="testForceRefresh()">♻️ Force Refresh</button>
+            <button class="btn" onclick="testSearch()">🔍 Test Search</button>
+            <button class="btn" onclick="showAllStudents()">👥 Show All Students</button>
+        </div>
+
+        <h2 style="margin-bottom: 15px;">Console Log</h2>
+        <div class="log-container" id="console-log"></div>
+
+        <h2 style="margin-bottom: 15px;">Students List</h2>
+        <div class="student-list" id="student-list">
+            <p style="color: #64748b; text-align: center;">No students loaded yet</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import studentLoader from './js/fee-student-loader.js';
+
+        const logContainer = document.getElementById('console-log');
+        const statusDiv = document.getElementById('status');
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateStatus(message, type = 'loading') {
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = type === 'loading' ? 
+                `<div class="spinner"></div><span>${message}</span>` : 
+                `<span>${message}</span>`;
+        }
+
+        function updateStats(students) {
+            const stats = {
+                total: students.length,
+                capt: students.filter(s => s.division?.toUpperCase() === 'CAPT').length,
+                lbs: students.filter(s => s.division?.toUpperCase() === 'LBS').length,
+                gama: students.filter(s => s.division?.toLowerCase().includes('gama')).length
+            };
+
+            document.getElementById('total-students').textContent = stats.total;
+            document.getElementById('capt-count').textContent = stats.capt;
+            document.getElementById('lbs-count').textContent = stats.lbs;
+            document.getElementById('gama-count').textContent = stats.gama;
+        }
+
+        function displayStudents(students) {
+            const list = document.getElementById('student-list');
+            
+            if (students.length === 0) {
+                list.innerHTML = '<p style="color: #64748b; text-align: center;">No students found</p>';
+                return;
+            }
+
+            list.innerHTML = students.slice(0, 50).map(s => `
+                <div class="student-item">
+                    <div>
+                        <div class="student-name">${s.name || 'Unknown'}</div>
+                        <div class="student-id">${s.studentID || s.studentId || s.id}</div>
+                    </div>
+                    <div class="student-division">${s.division || 'N/A'}</div>
+                </div>
+            `).join('');
+
+            if (students.length > 50) {
+                list.innerHTML += `<p style="text-align: center; color: #64748b; margin-top: 10px;">... and ${students.length - 50} more</p>`;
+            }
+        }
+
+        // Make test functions global
+        window.testLoad = async function() {
+            addLog('🔄 Testing student load...');
+            try {
+                const students = await studentLoader.autoLoadStudents();
+                addLog(`✅ Loaded ${students.length} students`);
+                updateStats(students);
+                displayStudents(students);
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`);
+            }
+        };
+
+        window.testForceRefresh = async function() {
+            addLog('♻️ Force refreshing from Firebase...');
+            try {
+                const students = await studentLoader.autoLoadStudents(true);
+                addLog(`✅ Refreshed ${students.length} students`);
+                updateStats(students);
+                displayStudents(students);
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`);
+            }
+        };
+
+        window.testSearch = function() {
+            const term = prompt('Enter search term:');
+            if (!term) return;
+
+            addLog(`🔍 Searching for: "${term}"`);
+            const results = studentLoader.searchStudents(term);
+            addLog(`Found ${results.length} results`);
+            displayStudents(results);
+        };
+
+        window.showAllStudents = function() {
+            addLog('👥 Showing all students...');
+            const students = studentLoader.getAllStudents();
+            displayStudents(students);
+        };
+
+        // Auto-initialize
+        addLog('🚀 Initializing student loader test page...');
+        
+        (async () => {
+            try {
+                // First, check which collection has students
+                addLog('📚 Checking collections...');
+                
+                const { db } = await import('./firebase.js');
+                const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+                
+                // Check 'users' collection (primary)
+                try {
+                    const usersSnap = await getDocs(collection(db, 'users'));
+                    const studentUsers = usersSnap.docs.filter(doc => doc.data().role === 'student');
+                    addLog(`✅ 'users' collection: ${studentUsers.length} students (total: ${usersSnap.docs.length})`);
+                    document.getElementById('collection-status').textContent = 
+                        `Found ${studentUsers.length} students in 'users' collection (${usersSnap.docs.length} total users)`;
+                } catch (error) {
+                    addLog(`⚠️ 'users' collection: ${error.message}`);
+                }
+
+                // Check 'students' collection (fallback)
+                try {
+                    const studentsSnap = await getDocs(collection(db, 'students'));
+                    addLog(`✅ 'students' collection: ${studentsSnap.docs.length} documents`);
+                    document.getElementById('collection-status').innerHTML += 
+                        `<br>Found ${studentsSnap.docs.length} documents in 'students' collection (fallback)`;
+                } catch (error) {
+                    addLog(`⚠️ 'students' collection: ${error.message}`);
+                }
+
+                // Now load students
+                updateStatus('Loading students from Firebase...', 'loading');
+                const students = await studentLoader.autoLoadStudents();
+                
+                addLog(`✅ Successfully loaded ${students.length} students`);
+                updateStatus(`✅ Successfully loaded ${students.length} students`, 'success');
+                
+                updateStats(students);
+                displayStudents(students);
+
+                // Show sample data
+                if (students.length > 0) {
+                    addLog('📋 Sample student data:');
+                    const sample = students[0];
+                    addLog(`   Name: ${sample.name || 'N/A'}`);
+                    addLog(`   ID: ${sample.studentID || sample.studentId || 'N/A'}`);
+                    addLog(`   Division: ${sample.division || 'N/A'}`);
+                    addLog(`   Fields: ${Object.keys(sample).join(', ')}`);
+                }
+
+            } catch (error) {
+                addLog(`❌ Fatal error: ${error.message}`);
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        })();
+    </script>
+</body>
+</html>

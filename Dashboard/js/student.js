@@ -522,6 +522,92 @@ let notificationManager;
 // Make notification manager globally accessible
 window.notificationManager = null;
 
+// =============================================================================
+// UNIQUE STUDENT ID GENERATION SYSTEM
+// =============================================================================
+
+/**
+ * Generates a unique student ID with automatic sequential numbering
+ * Format: std-division-XXXX
+ * Example: std-gama-0001, std-capt-0002, std-lbs-0003
+ */
+async function generateUniqueStudentId(division) {
+    try {
+        // Get division prefix
+        const divisionPrefix = getDivisionPrefix(division);
+        
+        // Query to find the last student ID with this division prefix
+        const usersRef = collection(db, "users");
+        const divisionPattern = `std-${divisionPrefix}`;
+        
+        // Get all students with IDs starting with this division prefix
+        const q = query(
+            usersRef,
+            where("studentId", ">=", divisionPattern),
+            where("studentId", "<=", divisionPattern + "\uf8ff"),
+            orderBy("studentId", "desc"),
+            limit(1)
+        );
+        
+        const snapshot = await getDocs(q);
+        
+        let sequence = 1;
+        
+        if (!snapshot.empty) {
+            // Extract the sequence number from the last ID
+            const lastId = snapshot.docs[0].data().studentId;
+            const lastSequence = parseInt(lastId.split('-')[2], 10);
+            sequence = lastSequence + 1;
+        }
+        
+        // Format sequence with leading zeros (4 digits)
+        const sequenceStr = String(sequence).padStart(4, '0');
+        
+        // Generate final ID
+        const studentId = `std-${divisionPrefix}-${sequenceStr}`;
+        
+        console.log('✅ Generated Student ID:', studentId);
+        return studentId;
+        
+    } catch (error) {
+        console.error('❌ Error generating student ID:', error);
+        // Fallback to timestamp-based ID
+        const timestamp = Date.now();
+        const fallbackId = `std-${timestamp}`;
+        console.warn('⚠️ Using fallback ID:', fallbackId);
+        return fallbackId;
+    }
+}
+
+/**
+ * Gets the division prefix for student IDs (lowercase)
+ */
+function getDivisionPrefix(division) {
+    const prefixes = {
+        'CAPT': 'capt',
+        'LBS': 'lbs',
+        'Gama Abacus': 'gama',
+        'OTHERS': 'others'
+    };
+    
+    return prefixes[division] || 'std';
+}
+
+/**
+ * Validates if a student ID is unique
+ */
+async function isStudentIdUnique(studentId) {
+    try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("studentId", "==", studentId), limit(1));
+        const snapshot = await getDocs(q);
+        return snapshot.empty;
+    } catch (error) {
+        console.error('Error checking student ID uniqueness:', error);
+        return false;
+    }
+}
+
 // Test Firebase connection
 async function testFirebaseConnection() {
     try {
@@ -807,7 +893,10 @@ function renderStudentTable(students) {
                            ${selectedStudents.has(student.id) ? 'checked' : ''}>
                 </td>
                 <td><img src="${student.photoURL || 'https://i.pinimg.com/736x/38/41/97/384197530d32338dd6caafaf1c6a26c4.jpg'}" alt="${student.name || 'Student'}" class="student-photo"></td>
-                <td>${student.name || 'N/A'}</td>
+                <td>
+                    <div>${student.name || 'N/A'}</div>
+                    <div class="student-id-badge">${student.studentId || 'No ID'}</div>
+                </td>
                 <td>${student.division || 'N/A'}</td>
                 <td>${student.division !== 'Gama Abacus' ? (student.course || 'N/A') : '-'}</td>
                 <td>${student.guardianName || 'N/A'}</td>
@@ -938,6 +1027,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     notificationManager = new NotificationManager();
     window.notificationManager = notificationManager;
     console.log('✅ Notification system initialized');
+    
+    // Add demo notifications if none exist
+    if (notificationManager.notifications.length === 0) {
+        notificationManager.addNotification({
+            type: 'success',
+            title: 'Student System Ready',
+            message: 'You can now manage students, track attendance, and export data.',
+            category: 'Students'
+        });
+        
+        notificationManager.addNotification({
+            type: 'info',
+            title: 'Bulk Upload Available',
+            message: 'Import multiple students at once using Excel or CSV files.',
+            category: 'Students'
+        });
+        
+        notificationManager.addNotification({
+            type: 'error',
+            title: 'Action Required',
+            message: '5 student profiles need verification before enrollment.',
+            category: 'Students'
+        });
+    }
     
     // Test Firebase connection first
     const isConnected = await testFirebaseConnection();
@@ -1088,16 +1201,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Handle division change
         async function handleDivisionChange() {
             const division = divisionSelect.value;
+            const totalFeesGroup = document.getElementById('total-fees-group');
+            const totalFeesInput = document.getElementById('total-fees');
+            const paymentTypeGroup = document.getElementById('payment-type-group');
+            const paymentTypeInput = document.getElementById('payment-type');
+            
+            console.log('🔄 Division changed to:', division);
             
             if (division === 'CAPT' || division === 'LBS') {
-                // Show course and fee status groups
-                if (courseGroup) courseGroup.style.display = 'block';
-                if (feeStatusGroup) feeStatusGroup.style.display = 'block';
+                // Show course, fee status, total fees, and payment type groups
+                if (courseGroup) {
+                    courseGroup.style.display = 'block';
+                    console.log('✅ Course group shown');
+                }
+                if (feeStatusGroup) {
+                    feeStatusGroup.style.display = 'block';
+                    console.log('✅ Fee status group shown');
+                }
+                if (totalFeesGroup) {
+                    totalFeesGroup.style.display = 'block';
+                    console.log('✅ Total fees group shown');
+                }
+                if (paymentTypeGroup) {
+                    paymentTypeGroup.style.display = 'block';
+                    console.log('✅ Payment type group shown');
+                }
                 
                 // Load and populate courses
                 if (courseSelect) {
                     courseSelect.innerHTML = '<option value="">Select Course</option>';
                     const courses = await loadCourses();
+                    console.log('📚 Loaded courses:', courses);
                     courses.forEach(course => {
                         const option = document.createElement('option');
                         option.value = course;
@@ -1105,21 +1239,47 @@ document.addEventListener('DOMContentLoaded', async () => {
                         courseSelect.appendChild(option);
                     });
                     courseSelect.required = true;
+                    console.log('✅ Course select populated with', courses.length, 'courses');
                 }
                 
-                // Set fee status as required
+                // Set fee status, total fees, and payment type as required
                 const feeStatusSelect = document.getElementById('fee-status');
                 if (feeStatusSelect) feeStatusSelect.required = true;
+                if (totalFeesInput) totalFeesInput.required = true;
+                if (paymentTypeInput) paymentTypeInput.required = true;
                 
             } else {
-                // Hide course and fee status for Gama Abacus
-                if (courseGroup) courseGroup.style.display = 'none';
-                if (feeStatusGroup) feeStatusGroup.style.display = 'none';
+                // Hide course, fee status, total fees, and payment type for Gama Abacus
+                console.log('🎯 Gama Abacus selected - hiding course/fee fields');
+                if (courseGroup) {
+                    courseGroup.style.display = 'none';
+                    console.log('✅ Course group hidden');
+                }
+                if (feeStatusGroup) {
+                    feeStatusGroup.style.display = 'none';
+                    console.log('✅ Fee status group hidden');
+                }
+                if (totalFeesGroup) {
+                    totalFeesGroup.style.display = 'none';
+                    console.log('✅ Total fees group hidden');
+                }
+                if (paymentTypeGroup) {
+                    paymentTypeGroup.style.display = 'none';
+                    console.log('✅ Payment type group hidden');
+                }
                 
                 // Remove required attributes
                 if (courseSelect) courseSelect.required = false;
                 const feeStatusSelect = document.getElementById('fee-status');
                 if (feeStatusSelect) feeStatusSelect.required = false;
+                if (totalFeesInput) {
+                    totalFeesInput.required = false;
+                    totalFeesInput.value = ''; // Clear value for Gama
+                }
+                if (paymentTypeInput) {
+                    paymentTypeInput.required = false;
+                    paymentTypeInput.value = ''; // Clear value for Gama
+                }
             }
         }
 
@@ -1158,17 +1318,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             addStudentModal.classList.remove('show');
             addStudentForm.reset();
             // Reset visibility
+            const totalFeesGroup = document.getElementById('total-fees-group');
+            const paymentTypeGroup = document.getElementById('payment-type-group');
             if (courseGroup) courseGroup.style.display = 'none';
             if (feeStatusGroup) feeStatusGroup.style.display = 'none';
+            if (totalFeesGroup) totalFeesGroup.style.display = 'none';
+            if (paymentTypeGroup) paymentTypeGroup.style.display = 'none';
         });
 
         // Close modal when clicking outside
         addStudentModal.addEventListener('click', (e) => {
             if (e.target === addStudentModal) {
+                const totalFeesGroup = document.getElementById('total-fees-group');
+                const paymentTypeGroup = document.getElementById('payment-type-group');
                 addStudentModal.classList.remove('show');
                 addStudentForm.reset();
                 if (courseGroup) courseGroup.style.display = 'none';
                 if (feeStatusGroup) feeStatusGroup.style.display = 'none';
+                if (totalFeesGroup) totalFeesGroup.style.display = 'none';
+                if (paymentTypeGroup) paymentTypeGroup.style.display = 'none';
             }
         });
 
@@ -1209,13 +1377,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const phone = document.getElementById('phone')?.value;
                 const admissionDate = document.getElementById('admission-date')?.value;
                 const admissionFee = parseFloat(document.getElementById('admission-fee')?.value);
+                const totalFees = parseFloat(document.getElementById('total-fees')?.value) || 0;
+                const paymentType = document.getElementById('payment-type')?.value || '';
                 const status = document.getElementById('status')?.value;
                 const batchTime = document.getElementById('batch-time')?.value;
                 
                 console.log('📊 Basic form data:', {
                     division, name, dob, age, gender, guardianName,
                     address, district, state, country, zip, email, phone,
-                    admissionDate, admissionFee, status, batchTime
+                    admissionDate, admissionFee, totalFees, paymentType, status, batchTime
                 });
 
                 // Quick validation
@@ -1230,18 +1400,38 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Division-specific fields
                 let course = 'General', feeStatus = 'Pending';
                 if (division === 'CAPT' || division === 'LBS') {
-                    course = document.getElementById('course-select')?.value || 'General';
+                    course = document.getElementById('course-select')?.value;
                     feeStatus = document.getElementById('fee-status')?.value || 'Pending';
+                    
+                    // Validate course is selected for CAPT/LBS
+                    if (!course || course === '') {
+                        console.error('❌ Course validation failed for', division);
+                        showToast(`Please select a course for ${division}`, 'error');
+                        return;
+                    }
+                    
+                    // Validate payment type is selected for CAPT/LBS
+                    if (!paymentType || paymentType === '') {
+                        console.error('❌ Payment type validation failed for', division);
+                        showToast(`Please select a payment type for ${division}`, 'error');
+                        return;
+                    }
                 } else if (division === 'Gama Abacus') {
                     course = 'Gama Abacus';
                     feeStatus = 'Paid';
                 }
 
-                console.log('📚 Course data:', { course, feeStatus });
+                console.log('📚 Course data:', { course, feeStatus, paymentType });
+
+                // Generate unique student ID
+                console.log('🆔 Generating unique student ID...');
+                const studentId = await generateUniqueStudentId(division);
+                console.log('✅ Generated Student ID:', studentId);
 
                 // Create document with default photo URL
                 console.log('📄 Creating student document...');
                 const studentDoc = {
+                    studentId: studentId,
                     name: name || 'Test Student',
                     email: email || 'test@example.com',
                     phone: phone || '0000000000',
@@ -1259,6 +1449,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     status: status || 'active',
                     batchTime: batchTime || '09:00',
                     admissionFee: admissionFee || 1000,
+                    totalFees: totalFees || 0,
+                    paymentType: paymentType || '',
                     admissionDate: new Date(admissionDate),
                     guardianOccupation: guardianOccupation,
                     dob: dob || '2000-01-01',
@@ -1336,6 +1528,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 // CRUD OPERATIONS FOR STUDENT MANAGEMENT
 // =============================================================================
 
+// Function to load student fee information from fees collection
+async function loadStudentFeeInfo(student, modal) {
+    try {
+        // Query fees collection for this student
+        const feesRef = collection(db, 'fees');
+        const q = query(feesRef, where('studentId', '==', student.studentId || student.id));
+        const snapshot = await getDocs(q);
+        
+        let totalPaid = 0;
+        let admissionFeePaid = 0;
+        
+        snapshot.forEach(doc => {
+            const fee = doc.data();
+            totalPaid += parseFloat(fee.amountPaid || 0);
+            
+            // Check if this is admission fee payment
+            if (fee.type && fee.type.toLowerCase().includes('admission')) {
+                admissionFeePaid += parseFloat(fee.amountPaid || 0);
+            }
+        });
+        
+        // Calculate pending admission fee
+        const totalAdmissionFee = parseFloat(student.admissionFee || 0);
+        const pendingAdmissionFee = Math.max(0, totalAdmissionFee - admissionFeePaid);
+        
+        // Calculate outstanding fees (total fees - total paid)
+        const totalCourseFees = parseFloat(student.totalFees || 0);
+        const outstandingFees = Math.max(0, totalCourseFees - totalPaid);
+        
+        // Update modal with fee information
+        const courseFeesElement = modal.querySelector('#view-student-course-fees');
+        if (courseFeesElement) courseFeesElement.textContent = totalCourseFees > 0 ? `₹${totalCourseFees.toFixed(2)}` : '₹0.00';
+        
+        const pendingAdmissionElement = modal.querySelector('#view-student-pending-admission');
+        if (pendingAdmissionElement) {
+            pendingAdmissionElement.textContent = `₹${pendingAdmissionFee.toFixed(2)}`;
+            pendingAdmissionElement.style.color = pendingAdmissionFee > 0 ? '#F59E0B' : '#10B981';
+        }
+        
+        const outstandingFeesElement = modal.querySelector('#view-student-outstanding-fees');
+        if (outstandingFeesElement) {
+            outstandingFeesElement.textContent = `₹${outstandingFees.toFixed(2)}`;
+            outstandingFeesElement.style.color = outstandingFees > 0 ? '#EF4444' : '#10B981';
+        }
+        
+        const totalPaidElement = modal.querySelector('#view-student-total-paid');
+        if (totalPaidElement) totalPaidElement.textContent = `₹${totalPaid.toFixed(2)}`;
+        
+    } catch (error) {
+        console.error('Error loading student fee info:', error);
+        // Set default values if error
+        const courseFeesElement = modal.querySelector('#view-student-course-fees');
+        if (courseFeesElement) courseFeesElement.textContent = '₹0.00';
+        
+        const pendingAdmissionElement = modal.querySelector('#view-student-pending-admission');
+        if (pendingAdmissionElement) pendingAdmissionElement.textContent = 'Error loading';
+        
+        const outstandingFeesElement = modal.querySelector('#view-student-outstanding-fees');
+        if (outstandingFeesElement) outstandingFeesElement.textContent = 'Error loading';
+        
+        const totalPaidElement = modal.querySelector('#view-student-total-paid');
+        if (totalPaidElement) totalPaidElement.textContent = '₹0.00';
+    }
+}
+
 // Function to view student details
 window.viewStudent = async function(studentId) {
     try {
@@ -1355,7 +1612,7 @@ window.viewStudent = async function(studentId) {
         // Photo and basic info
         modal.querySelector('#view-student-photo').src = student.photoURL || 'https://i.pinimg.com/736x/38/41/97/384197530d32338dd6caafaf1c6a26c4.jpg';
         modal.querySelector('#view-student-name').textContent = student.name || `${student.firstName || ''} ${student.lastName || ''}`.trim();
-        modal.querySelector('#view-student-id').textContent = `ID: ${student.id}`;
+        modal.querySelector('#view-student-id').textContent = student.studentId || `ID: ${student.id}`;
         
         // Personal Information - using direct element IDs
         const dobElement = modal.querySelector('#view-student-dob');
@@ -1382,6 +1639,25 @@ window.viewStudent = async function(studentId) {
         
         const admissionFeeElement = modal.querySelector('#view-student-admission-fee');
         if (admissionFeeElement) admissionFeeElement.textContent = student.admissionFee ? `₹${student.admissionFee}` : 'Not provided';
+        
+        const totalFeesElement = modal.querySelector('#view-student-total-fees');
+        if (totalFeesElement) totalFeesElement.textContent = student.totalFees ? `₹${student.totalFees}` : 'Not provided';
+        
+        // Payment Type
+        const paymentTypeElement = modal.querySelector('#view-student-payment-type');
+        if (paymentTypeElement) {
+            const paymentType = student.paymentType || 'Not specified';
+            paymentTypeElement.textContent = paymentType;
+            // Add badge styling for payment type
+            if (paymentType === 'One Time') {
+                paymentTypeElement.style.color = '#10B981';
+            } else if (paymentType === 'Installment') {
+                paymentTypeElement.style.color = '#3B82F6';
+            }
+        }
+        
+        // Fee Information - Calculate from fees collection
+        await loadStudentFeeInfo(student, modal);
         
         // Guardian Information
         const guardianNameElement = modal.querySelector('#view-student-guardian-name');
@@ -1646,6 +1922,15 @@ async function populateEditForm(form, student) {
     }
     
     if (admissionFeeField) admissionFeeField.value = student.admissionFee || '';
+    
+    // Total Fees
+    const totalFeesField = document.getElementById('edit-total-fees');
+    if (totalFeesField) totalFeesField.value = student.totalFees || '';
+    
+    // Payment Type
+    const paymentTypeField = document.getElementById('edit-payment-type');
+    if (paymentTypeField) paymentTypeField.value = student.paymentType || '';
+    
     if (batchTimeField) batchTimeField.value = student.batchTime || '';
     if (feeStatusField) feeStatusField.value = student.feeStatus || 'Pending';
     
@@ -1673,6 +1958,10 @@ async function updateEditCourseOptions(division) {
     const courseSelect = document.getElementById('edit-course-select');
     const courseGroup = document.getElementById('edit-course-group');
     const feeStatusGroup = document.getElementById('edit-fee-status-group');
+    const totalFeesGroup = document.getElementById('edit-total-fees-group');
+    const totalFeesInput = document.getElementById('edit-total-fees');
+    const paymentTypeGroup = document.getElementById('edit-payment-type-group');
+    const paymentTypeInput = document.getElementById('edit-payment-type');
     
     if (!courseSelect) return;
     
@@ -1681,7 +1970,7 @@ async function updateEditCourseOptions(division) {
     
     // Show/hide groups based on division
     if (division === 'CAPT' || division === 'LBS') {
-        // Show course and fee status groups
+        // Show course, fee status, total fees, and payment type groups
         if (courseGroup) courseGroup.style.display = 'block';
         if (feeStatusGroup) feeStatusGroup.style.display = 'block';
         
@@ -1697,15 +1986,29 @@ async function updateEditCourseOptions(division) {
         courseSelect.required = true;
         const feeStatusSelect = document.getElementById('edit-fee-status');
         if (feeStatusSelect) feeStatusSelect.required = true;
+        if (totalFeesGroup) totalFeesGroup.style.display = 'block';
+        if (totalFeesInput) totalFeesInput.required = true;
+        if (paymentTypeGroup) paymentTypeGroup.style.display = 'block';
+        if (paymentTypeInput) paymentTypeInput.required = true;
         
     } else {
-        // Hide course and fee status for Gama Abacus
+        // Hide course, fee status, total fees, and payment type for Gama Abacus
         if (courseGroup) courseGroup.style.display = 'none';
         if (feeStatusGroup) feeStatusGroup.style.display = 'none';
+        if (totalFeesGroup) totalFeesGroup.style.display = 'none';
+        if (paymentTypeGroup) paymentTypeGroup.style.display = 'none';
         
         courseSelect.required = false;
         const feeStatusSelect = document.getElementById('edit-fee-status');
         if (feeStatusSelect) feeStatusSelect.required = false;
+        if (totalFeesInput) {
+            totalFeesInput.required = false;
+            totalFeesInput.value = ''; // Clear value for Gama
+        }
+        if (paymentTypeInput) {
+            paymentTypeInput.required = false;
+            paymentTypeInput.value = ''; // Clear value for Gama
+        }
     }
 }
 
@@ -1755,8 +2058,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Reset visibility
             const courseGroup = document.getElementById('edit-course-group');
             const feeStatusGroup = document.getElementById('edit-fee-status-group');
+            const totalFeesGroup = document.getElementById('edit-total-fees-group');
+            const paymentTypeGroup = document.getElementById('edit-payment-type-group');
             if (courseGroup) courseGroup.style.display = 'none';
             if (feeStatusGroup) feeStatusGroup.style.display = 'none';
+            if (totalFeesGroup) totalFeesGroup.style.display = 'none';
+            if (paymentTypeGroup) paymentTypeGroup.style.display = 'none';
         });
     }
     
@@ -1802,9 +2109,12 @@ async function handleEditFormSubmission(e) {
         const formData = new FormData(form);
         const studentData = Object.fromEntries(formData.entries());
         
-        // Convert admission fee and age to numbers
+        // Convert admission fee, total fees and age to numbers
         if (studentData.admissionFee) {
             studentData.admissionFee = parseFloat(studentData.admissionFee);
+        }
+        if (studentData.totalFees) {
+            studentData.totalFees = parseFloat(studentData.totalFees);
         }
         if (studentData.age) {
             studentData.age = parseInt(studentData.age, 10);
@@ -2885,12 +3195,16 @@ async function startImportProcess() {
         
         const batchPromises = batch.map(async (studentData) => {
             try {
+                // Generate unique student ID for each student
+                const studentId = await generateUniqueStudentId(studentData.division);
+                
                 await addDoc(collection(db, "users"), {
                     ...studentData,
+                    studentId: studentId,
                     createdAt: new Date(),
                     updatedAt: new Date()
                 });
-                return { success: true, student: studentData };
+                return { success: true, student: studentData, studentId: studentId };
             } catch (error) {
                 console.error('Error adding student:', studentData.name, error);
                 return { success: false, student: studentData, error: error.message };

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroTech Center - Receipt Management</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <link rel="stylesheet" href="css/receipt.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="logo-text">MicroTech Center</div>
+                </div>
+                <div class="sidebar-subtitle">Admin Dashboard</div>
+            </div>
+
+            <div class="sidebar-search">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search students, courses, staff...">
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="revenue.html" class="nav-item">
+                    <i class="fas fa-dollar-sign nav-icon"></i>
+                    <span class="nav-text">Revenue Management</span>
+                </a>
+                <a href="student.html" class="nav-item">
+                    <i class="fas fa-users nav-icon"></i>
+                    <span class="nav-text">Students</span>
+                </a>
+                <a href="staff.html" class="nav-item">
+                    <i class="fas fa-user-tie nav-icon"></i>
+                    <span class="nav-text">Staff</span>
+                </a>
+                <a href="counselors.html" class="nav-item">
+                    <i class="fas fa-phone nav-icon"></i>
+                    <span class="nav-text">Counselors</span>
+                </a>
+                <a href="courses.html" class="nav-item">
+                    <i class="fas fa-book-open nav-icon"></i>
+                    <span class="nav-text">Courses & Academics</span>
+                </a>
+                <a href="fees.html" class="nav-item">
+                    <i class="fas fa-credit-card nav-icon"></i>
+                    <span class="nav-text">Fee Management</span>
+                </a>
+                <a href="receipt.html" class="nav-item active">
+                    <i class="fas fa-receipt nav-icon"></i>
+                    <span class="nav-text">Receipt Management</span>
+                </a>
+                <a href="communication.html" class="nav-item">
+                    <i class="fas fa-comments nav-icon"></i>
+                    <span class="nav-text">Communication</span>
+                </a>
+                <a href="advertisement.html" class="nav-item">
+                    <i class="fas fa-bullhorn nav-icon"></i>
+                    <span class="nav-text">Advertisement</span>
+                </a>
+                <a href="alumni.html" class="nav-item">
+                    <i class="fas fa-graduation-cap nav-icon"></i>
+                    <span class="nav-text">Alumni Portal</span>
+                </a>
+                <a href="scholarship.html" class="nav-item">
+                    <i class="fas fa-shield-alt nav-icon"></i>
+                    <span class="nav-text">Scholarship & Offers</span>
+                </a>
+                <a href="referral.html" class="nav-item">
+                    <i class="fas fa-share-alt nav-icon"></i>
+                    <span class="nav-text">Referral Program</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-bar nav-icon"></i>
+                    <span class="nav-text">Analytics & Reports</span>
+                </a>
+                <a href="notifications.html" class="nav-item">
+                    <i class="fas fa-bell nav-icon"></i>
+                    <span class="nav-text">Notifications</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog nav-icon"></i>
+                    <span class="nav-text">Settings</span>
+                </a>
+                <a href="cloud.html" class="nav-item">
+                    <i class="fas fa-cloud nav-icon"></i>
+                    <span class="nav-text">Cloud</span>
+                </a>
+                <a href="expenses.html" class="nav-item">
+                    <i class="fas fa-wallet nav-icon"></i>
+                    <span class="nav-text">Expenses</span>
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <i class="fas fa-money-bill-wave nav-icon"></i>
+                    <span class="nav-text">Finance</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">
+                        <i class="fas fa-receipt"></i>
+                        Receipt Management
+                    </h1>
+                </div>
+                <div class="header-right">
+                    <!-- Notification Dropdown -->
+                    <div class="notification-container">
+                        <button class="notification-btn" id="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notification-badge">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notification-dropdown">
+                            <div class="notification-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read-btn" id="mark-all-read">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notification-list">
+                                <div class="no-notifications">No new notifications</div>
+                            </div>
+                            <div class="notification-footer">
+                                <a href="notifications.html">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="profile-container"></div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-wrapper">
+                <!-- Receipt Type Selection -->
+                <div class="receipt-type-section">
+                    <h2><i class="fas fa-file-invoice"></i> Select Receipt Type</h2>
+                    <div class="receipt-type-cards">
+                        <div class="receipt-type-card" onclick="selectReceiptType('fee')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3>Fee Receipt</h3>
+                            <p>Generate receipts for course fees, tuition, and admission fees</p>
+                        </div>
+                        <div class="receipt-type-card" onclick="selectReceiptType('payment')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <h3>Payment Receipt</h3>
+                            <p>General payment receipts for various services</p>
+                        </div>
+                        <div class="receipt-type-card" onclick="selectReceiptType('donation')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <h3>Donation Receipt</h3>
+                            <p>Receipts for donations and contributions</p>
+                        </div>
+                        <div class="receipt-type-card" onclick="selectReceiptType('purchase')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3>Purchase Receipt</h3>
+                            <p>Receipts for materials, books, and equipment</p>
+                        </div>
+                        <div class="receipt-type-card" onclick="selectReceiptType('refund')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-undo-alt"></i>
+                            </div>
+                            <h3>Refund Receipt</h3>
+                            <p>Receipts for fee refunds and reimbursements</p>
+                        </div>
+                        <div class="receipt-type-card" onclick="selectReceiptType('custom')">
+                            <div class="receipt-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h3>Custom Receipt</h3>
+                            <p>Create custom receipts for any purpose</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Receipt Generation Form -->
+                <div class="receipt-form-section" id="receipt-form-section" style="display: none;">
+                    <div class="form-header">
+                        <h2 id="form-title"><i class="fas fa-file-alt"></i> Generate Receipt</h2>
+                        <button class="btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+
+                    <form id="receipt-form" class="receipt-form">
+                        <!-- Receipt Basic Info -->
+                        <div class="form-section">
+                            <h3>Receipt Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="receipt-number">Receipt Number</label>
+                                    <input type="text" id="receipt-number" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="receipt-date">Receipt Date</label>
+                                    <input type="date" id="receipt-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-method">Payment Method</label>
+                                    <select id="payment-method" required>
+                                        <option value="">Select Method</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="upi">UPI</option>
+                                        <option value="card">Card</option>
+                                        <option value="net-banking">Net Banking</option>
+                                        <option value="cheque">Cheque</option>
+                                        <option value="dd">Demand Draft</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="transaction-ref-group" style="display: none;">
+                                    <label for="transaction-ref">Transaction Reference</label>
+                                    <input type="text" id="transaction-ref" placeholder="UTR/Transaction ID">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer/Student Info -->
+                        <div class="form-section">
+                            <h3>Recipient Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="recipient-name">Name</label>
+                                    <input type="text" id="recipient-name" required placeholder="Full Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-id">Student/Customer ID</label>
+                                    <input type="text" id="recipient-id" placeholder="ID Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-phone">Phone Number</label>
+                                    <input type="tel" id="recipient-phone" placeholder="Contact Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-email">Email Address</label>
+                                    <input type="email" id="recipient-email" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-address">Address</label>
+                                <textarea id="recipient-address" rows="2" placeholder="Full Address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Items/Services -->
+                        <div class="form-section">
+                            <h3>Items/Services</h3>
+                            <div id="items-container">
+                                <div class="item-row">
+                                    <div class="item-fields">
+                                        <input type="text" class="item-description" placeholder="Description" required>
+                                        <input type="number" class="item-quantity" placeholder="Qty" value="1" min="1">
+                                        <input type="number" class="item-rate" placeholder="Rate" step="0.01" min="0"
+                                            required>
+                                        <input type="number" class="item-amount" placeholder="Amount" readonly>
+                                        <button type="button" class="btn-remove-item" onclick="removeItem(this)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-add-item" onclick="addItem()">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+
+                        <!-- Totals -->
+                        <div class="form-section totals-section">
+                            <div class="totals-grid">
+                                <div class="form-group">
+                                    <label for="subtotal">Subtotal</label>
+                                    <input type="number" id="subtotal" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="discount">Discount (%)</label>
+                                    <input type="number" id="discount" value="0" min="0" max="100" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="discount-amount">Discount Amount</label>
+                                    <input type="number" id="discount-amount" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tax">Tax/GST (%)</label>
+                                    <input type="number" id="tax" value="0" min="0" max="100" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tax-amount">Tax Amount</label>
+                                    <input type="number" id="tax-amount" readonly>
+                                </div>
+                                <div class="form-group total-group">
+                                    <label for="total-amount">Total Amount</label>
+                                    <input type="number" id="total-amount" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Details -->
+                        <div class="form-section">
+                            <h3>Additional Details</h3>
+                            <div class="form-group">
+                                <label for="remarks">Remarks/Notes</label>
+                                <textarea id="remarks" rows="3" placeholder="Any additional notes..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn-preview" onclick="previewReceipt()">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+                            <button type="button" class="btn-primary" onclick="generateReceipt()">
+                                <i class="fas fa-file-pdf"></i> Generate PDF
+                            </button>
+                            <button type="button" class="btn-primary" onclick="printReceipt()">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="saveReceipt()">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Receipts -->
+                <div class="recent-receipts-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-history"></i> Recent Receipts</h2>
+                        <button class="btn-secondary" onclick="viewAllReceipts()">
+                            <i class="fas fa-list"></i> View All
+                        </button>
+                    </div>
+                    <div class="receipts-table-container">
+                        <table class="receipts-table">
+                            <thead>
+                                <tr>
+                                    <th>Receipt No.</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Recipient</th>
+                                    <th>Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receipts-table-body">
+                                <tr>
+                                    <td colspan="7" class="no-data">No receipts generated yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Preview Modal -->
+    <div id="receipt-preview-modal" class="modal">
+        <div class="modal-content receipt-preview-content">
+            <div class="modal-header">
+                <h2>Receipt Preview</h2>
+                <button class="modal-close" onclick="closePreview()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="receipt-preview" class="receipt-preview">
+                <!-- Receipt content will be generated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closePreview()">Close</button>
+                <button class="btn-primary" onclick="printPreview()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/receipt.js"></script>
+    <script type="module" src="js/toast.js"></script>
+    <script type="module" src="js/notification-manager.js"></script>
+    <script type="module" src="js/profile-utils.js"></script>
+</body>
+
+</html>

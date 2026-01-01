@@ -1,0 +1,869 @@
+<!-- ============================================
+     MODALS FOR ADVANCED FEE MANAGEMENT
+     All interactive forms and dialogs
+     ============================================ -->
+
+<!-- ============================================
+     1. INSTALLMENT PLAN MODAL
+     ============================================ -->
+<div id="installment-modal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-calendar-alt"></i> Create Installment Plan</h2>
+            <span class="close-btn" onclick="closeModal('installment-modal')">&times;</span>
+        </div>
+        
+        <form id="installment-form" class="advanced-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Student ID *</label>
+                    <input type="text" id="inst-student-id" required placeholder="Search student...">
+                    <div id="inst-student-suggestions" class="suggestions-dropdown"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> Student Name *</label>
+                    <input type="text" id="inst-student-name" required readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-book"></i> Course *</label>
+                    <select id="inst-course" required>
+                        <option value="">Select Course</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Mobile App Development">Mobile App Development</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-rupee-sign"></i> Total Fee *</label>
+                    <input type="number" id="inst-total-fee" required placeholder="50000" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> Number of Installments *</label>
+                    <input type="number" id="inst-number" required placeholder="5" min="2" max="12">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> First Installment Due Date *</label>
+                    <input type="date" id="inst-start-date" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Interval (days) *</label>
+                    <input type="number" id="inst-interval" required placeholder="30" value="30" min="1">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-building"></i> Division</label>
+                    <select id="inst-division">
+                        <option value="gama">Gama Abacus</option>
+                        <option value="lbs">LBS Skill Centre</option>
+                        <option value="capt">CAPT</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary" onclick="generateInstallmentPreview()">
+                    <i class="fas fa-eye"></i> Preview Schedule
+                </button>
+            </div>
+
+            <!-- Preview Section -->
+            <div id="installment-preview" class="preview-section" style="display: none;">
+                <h4><i class="fas fa-list"></i> Installment Schedule Preview</h4>
+                <div class="table-container">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="installment-preview-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Installment Plan
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('installment-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     2. RECORD INSTALLMENT PAYMENT MODAL
+     ============================================ -->
+<div id="installment-payment-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-money-bill-wave"></i> Record Installment Payment</h2>
+            <span class="close-btn" onclick="closeModal('installment-payment-modal')">&times;</span>
+        </div>
+        
+        <form id="installment-payment-form" class="advanced-form">
+            <input type="hidden" id="inst-pay-plan-id">
+            <input type="hidden" id="inst-pay-number">
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span>Student:</span>
+                    <strong id="inst-pay-student-name"></strong>
+                </div>
+                <div class="info-row">
+                    <span>Installment:</span>
+                    <strong id="inst-pay-installment-info"></strong>
+                </div>
+                <div class="info-row">
+                    <span>Amount Due:</span>
+                    <strong id="inst-pay-amount-due"></strong>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-rupee-sign"></i> Amount Paid *</label>
+                <input type="number" id="inst-pay-amount" required min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Payment Date *</label>
+                <input type="date" id="inst-pay-date" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-credit-card"></i> Payment Mode *</label>
+                <select id="inst-pay-mode" required>
+                    <option value="">Select Mode</option>
+                    <option value="cash">Cash</option>
+                    <option value="upi">UPI</option>
+                    <option value="card">Card</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="cheque">Cheque</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-receipt"></i> Receipt Number</label>
+                <input type="text" id="inst-pay-receipt" placeholder="Auto-generated">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-sticky-note"></i> Notes</label>
+                <textarea id="inst-pay-notes" rows="3" placeholder="Additional notes..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Record Payment
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('installment-payment-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     3. DISCOUNT MODAL
+     ============================================ -->
+<div id="discount-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-percent"></i> Apply Discount</h2>
+            <span class="close-btn" onclick="closeModal('discount-modal')">&times;</span>
+        </div>
+        
+        <form id="discount-form" class="advanced-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Student ID *</label>
+                    <input type="text" id="disc-student-id" required placeholder="Search student...">
+                    <div id="disc-student-suggestions" class="suggestions-dropdown"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> Student Name *</label>
+                    <input type="text" id="disc-student-name" required readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-book"></i> Course</label>
+                    <input type="text" id="disc-course" placeholder="Web Development">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-rupee-sign"></i> Base Fee Amount *</label>
+                    <input type="number" id="disc-base-fee" required placeholder="50000" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Discount Type *</label>
+                    <select id="disc-type" required onchange="updateDiscountPreview()">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="flat">Flat Amount (₹)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calculator"></i> Discount Value *</label>
+                    <input type="number" id="disc-value" required placeholder="10" min="0" step="0.01" oninput="updateDiscountPreview()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-list"></i> Discount Category *</label>
+                <select id="disc-category" required>
+                    <option value="early-bird">Early Bird Offer</option>
+                    <option value="referral">Referral Bonus</option>
+                    <option value="sibling">Sibling Discount</option>
+                    <option value="scholarship">Scholarship</option>
+                    <option value="need-based">Financial Aid</option>
+                    <option value="custom">Custom Discount</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Reason *</label>
+                <textarea id="disc-reason" required rows="2" placeholder="Reason for applying discount..."></textarea>
+            </div>
+
+            <!-- Discount Preview -->
+            <div class="calculation-preview">
+                <h4><i class="fas fa-calculator"></i> Discount Calculation</h4>
+                <div class="calc-row">
+                    <span>Base Fee:</span>
+                    <strong id="disc-preview-base">₹0</strong>
+                </div>
+                <div class="calc-row text-warning">
+                    <span>Discount:</span>
+                    <strong id="disc-preview-discount">-₹0</strong>
+                </div>
+                <div class="calc-row text-success">
+                    <span>Final Fee:</span>
+                    <strong id="disc-preview-final">₹0</strong>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Apply Discount
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('discount-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     4. SCHOLARSHIP MODAL
+     ============================================ -->
+<div id="scholarship-modal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-graduation-cap"></i> Create Scholarship Program</h2>
+            <span class="close-btn" onclick="closeModal('scholarship-modal')">&times;</span>
+        </div>
+        
+        <form id="scholarship-form" class="advanced-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-certificate"></i> Scholarship Name *</label>
+                    <input type="text" id="schol-name" required placeholder="Merit Scholarship 2025">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Type *</label>
+                    <select id="schol-type" required>
+                        <option value="merit">Merit-Based</option>
+                        <option value="need-based">Need-Based</option>
+                        <option value="sports">Sports Excellence</option>
+                        <option value="special">Special Category</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-percent"></i> Discount Type *</label>
+                    <select id="schol-disc-type" required>
+                        <option value="percentage">Percentage</option>
+                        <option value="flat">Flat Amount</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calculator"></i> Discount Value *</label>
+                    <input type="number" id="schol-disc-value" required placeholder="25" min="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-clipboard-list"></i> Eligibility Criteria *</label>
+                <textarea id="schol-criteria" required rows="3" placeholder="e.g., Minimum 80% marks in previous qualification"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Maximum Beneficiaries</label>
+                    <input type="number" id="schol-max-beneficiaries" placeholder="10" min="1">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-building"></i> Applicable Divisions</label>
+                    <select id="schol-divisions" multiple>
+                        <option value="gama">Gama Abacus</option>
+                        <option value="lbs" selected>LBS Skill Centre</option>
+                        <option value="capt" selected>CAPT</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-check"></i> Valid From *</label>
+                    <input type="date" id="schol-valid-from" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-times"></i> Valid Until *</label>
+                    <input type="date" id="schol-valid-until" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-book"></i> Applicable Courses (comma-separated)</label>
+                <input type="text" id="schol-courses" placeholder="Web Development, Digital Marketing">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Scholarship
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('scholarship-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     5. ADVANCE PAYMENT MODAL
+     ============================================ -->
+<div id="advance-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-arrow-circle-up"></i> Record Advance Payment</h2>
+            <span class="close-btn" onclick="closeModal('advance-modal')">&times;</span>
+        </div>
+        
+        <form id="advance-form" class="advanced-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Student ID *</label>
+                    <input type="text" id="adv-student-id" required placeholder="Search student...">
+                    <div id="adv-student-suggestions" class="suggestions-dropdown"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> Student Name *</label>
+                    <input type="text" id="adv-student-name" required readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-rupee-sign"></i> Advance Amount *</label>
+                    <input type="number" id="adv-amount" required placeholder="20000" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Payment Date *</label>
+                    <input type="date" id="adv-date" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-credit-card"></i> Payment Mode *</label>
+                    <select id="adv-mode" required>
+                        <option value="">Select Mode</option>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Card</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="cheque">Cheque</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-receipt"></i> Receipt Number</label>
+                    <input type="text" id="adv-receipt" placeholder="ADV-auto-generated">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-sticky-note"></i> Notes</label>
+                <textarea id="adv-notes" rows="3" placeholder="Purpose of advance payment..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Record Advance
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('advance-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     6. ADJUST ADVANCE MODAL
+     ============================================ -->
+<div id="adjust-advance-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Adjust Advance Payment</h2>
+            <span class="close-btn" onclick="closeModal('adjust-advance-modal')">&times;</span>
+        </div>
+        
+        <form id="adjust-advance-form" class="advanced-form">
+            <input type="hidden" id="adjust-adv-id">
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span>Student:</span>
+                    <strong id="adjust-adv-student-name"></strong>
+                </div>
+                <div class="info-row">
+                    <span>Available Balance:</span>
+                    <strong id="adjust-adv-balance" class="text-success"></strong>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-rupee-sign"></i> Adjustment Amount *</label>
+                <input type="number" id="adjust-amount" required min="0" step="0.01" placeholder="5000">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-file-invoice"></i> Adjust Against (Fee Record ID)</label>
+                <input type="text" id="adjust-against" placeholder="FEE_RECORD_ID">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Description *</label>
+                <textarea id="adjust-description" required rows="2" placeholder="e.g., January 2025 monthly fee"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Adjust Balance
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('adjust-advance-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     7. FEE BREAKDOWN MODAL
+     ============================================ -->
+<div id="breakdown-modal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-list-alt"></i> Create Fee Breakdown</h2>
+            <span class="close-btn" onclick="closeModal('breakdown-modal')">&times;</span>
+        </div>
+        
+        <form id="breakdown-form" class="advanced-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-book"></i> Course Name *</label>
+                    <input type="text" id="breakdown-course" required placeholder="Full Stack Web Development">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-building"></i> Division *</label>
+                    <select id="breakdown-division" required>
+                        <option value="gama">Gama Abacus</option>
+                        <option value="lbs">LBS Skill Centre</option>
+                        <option value="capt">CAPT</option>
+                    </select>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 20px; color: #f1f5f9;"><i class="fas fa-layer-group"></i> Fee Components</h4>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-door-open"></i> Admission Fee</label>
+                    <input type="number" id="breakdown-admission" placeholder="5000" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-graduation-cap"></i> Course Fee</label>
+                    <input type="number" id="breakdown-course-fee" placeholder="35000" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-file-alt"></i> Exam Fee</label>
+                    <input type="number" id="breakdown-exam" placeholder="3000" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-book-open"></i> Material Fee</label>
+                    <input type="number" id="breakdown-material" placeholder="5000" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-flask"></i> Lab Fee</label>
+                    <input type="number" id="breakdown-lab" placeholder="0" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-certificate"></i> Certificate Fee</label>
+                    <input type="number" id="breakdown-certificate" placeholder="2000" min="0" oninput="calculateBreakdownTotal()">
+                </div>
+            </div>
+
+            <div class="calculation-preview">
+                <h4><i class="fas fa-calculator"></i> Total Calculation</h4>
+                <div class="calc-row text-success">
+                    <span>Total Course Fee:</span>
+                    <strong id="breakdown-total-display">₹0</strong>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Breakdown
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('breakdown-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     8. FEE CATEGORY MODAL
+     ============================================ -->
+<div id="category-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-tags"></i> Add Fee Category</h2>
+            <span class="close-btn" onclick="closeModal('category-modal')">&times;</span>
+        </div>
+        
+        <form id="category-form" class="advanced-form">
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Category Name *</label>
+                <input type="text" id="cat-name" required placeholder="Equipment Rental">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Description</label>
+                <textarea id="cat-description" rows="2" placeholder="Brief description of this fee category"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-rupee-sign"></i> Default Amount</label>
+                    <input type="number" id="cat-default-amount" placeholder="1500" min="0">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-check-circle"></i> Optional?</label>
+                    <select id="cat-optional">
+                        <option value="false">Mandatory</option>
+                        <option value="true">Optional</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-building"></i> Applicable Divisions</label>
+                <select id="cat-divisions" multiple>
+                    <option value="gama">Gama Abacus</option>
+                    <option value="lbs" selected>LBS Skill Centre</option>
+                    <option value="capt" selected>CAPT</option>
+                    <option value="all">All Divisions</option>
+                </select>
+                <small style="color: #94a3b8;">Hold Ctrl/Cmd to select multiple</small>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-icons"></i> Icon (Font Awesome class)</label>
+                    <input type="text" id="cat-icon" placeholder="fa-laptop" value="fa-money-bill">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> Color (Hex)</label>
+                    <input type="color" id="cat-color" value="#3b82f6">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Category
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('category-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     VIEW DETAILS MODALS (Read-only)
+     ============================================ -->
+
+<!-- Installment Details Modal -->
+<div id="view-installment-modal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-info-circle"></i> Installment Plan Details</h2>
+            <span class="close-btn" onclick="closeModal('view-installment-modal')">&times;</span>
+        </div>
+        <div id="view-installment-content" class="modal-body"></div>
+    </div>
+</div>
+
+<!-- Discount Details Modal -->
+<div id="view-discount-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-info-circle"></i> Discount Details</h2>
+            <span class="close-btn" onclick="closeModal('view-discount-modal')">&times;</span>
+        </div>
+        <div id="view-discount-content" class="modal-body"></div>
+    </div>
+</div>
+
+<!-- Advance Payment History Modal -->
+<div id="view-advance-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-history"></i> Advance Payment History</h2>
+            <span class="close-btn" onclick="closeModal('view-advance-modal')">&times;</span>
+        </div>
+        <div id="view-advance-content" class="modal-body"></div>
+    </div>
+</div>
+
+<style>
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    margin: 3% auto;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideDown 0.3s ease;
+}
+
+.modal-large {
+    max-width: 900px;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 30px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-body {
+    padding: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    transform: rotate(90deg);
+}
+
+.advanced-form {
+    padding: 30px;
+}
+
+.preview-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.preview-section h4 {
+    color: #f1f5f9;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.preview-table th,
+.preview-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+}
+
+.preview-table th {
+    background: rgba(102, 126, 234, 0.2);
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.info-box {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: #cbd5e1;
+}
+
+.info-row strong {
+    color: #10b981;
+}
+
+.calculation-preview {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.calculation-preview h4 {
+    color: #f1f5f9;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: #cbd5e1;
+    font-size: 16px;
+}
+
+.calc-row strong {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.suggestions-dropdown {
+    position: absolute;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: calc(100% - 24px);
+    z-index: 1000;
+    display: none;
+}
+
+.suggestion-item {
+    padding: 12px;
+    cursor: pointer;
+    color: #cbd5e1;
+    transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: rgba(102, 126, 234, 0.2);
+    color: #f1f5f9;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

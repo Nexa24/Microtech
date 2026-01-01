@@ -54,20 +54,61 @@ export class NotificationManager {
         // Load some sample notifications on first load
         const defaultNotifications = [
             {
-                type: 'info',
+                type: 'success',
                 title: 'Welcome to MicroTech Dashboard',
-                message: 'Notification system is now active. You will receive updates here.'
+                message: 'Notification system is now active. You will receive updates here.',
+                category: 'System'
+            },
+            {
+                type: 'info',
+                title: 'New Feature: Bulk Operations',
+                message: 'You can now perform bulk actions on students and staff records.',
+                category: 'System'
+            },
+            {
+                type: 'warning',
+                title: 'Pending Approvals',
+                message: '8 student applications are waiting for your review.',
+                category: 'Students'
             },
             {
                 type: 'success',
-                title: 'System Ready',
-                message: 'All dashboard features are loaded and ready to use.'
+                title: 'Payment Received',
+                message: 'Fee payment of ₹15,000 received from John Doe.',
+                category: 'Finance'
+            },
+            {
+                type: 'info',
+                title: 'Course Update',
+                message: 'Web Development course materials have been updated.',
+                category: 'Courses'
+            },
+            {
+                type: 'error',
+                title: 'Action Required',
+                message: 'Staff attendance records for yesterday are incomplete.',
+                category: 'Staff'
+            },
+            {
+                type: 'success',
+                title: 'Export Complete',
+                message: 'Student data exported successfully to Excel.',
+                category: 'Students'
+            },
+            {
+                type: 'warning',
+                title: 'Follow-up Reminder',
+                message: '3 counselor inquiries need follow-up today.',
+                category: 'Counselors'
             }
         ];
 
         defaultNotifications.forEach(notification => {
             this.addNotification(notification, false); // Don't save to storage yet
         });
+        
+        // Save all default notifications at once
+        this.saveToStorage();
     }
 
     bindEvents() {

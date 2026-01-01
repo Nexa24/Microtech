@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MicroTech Center - Analytics & Reports</title>
+    <title>Analytics & Reports - MicroTech Admin</title>
     <link rel="stylesheet" href="admin-dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="analytics.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Left Sidebar -->
         <div class="left-sidebar">
-        <div class="sidebar-header">
+            <div class="sidebar-header">
                 <div class="sidebar-logo">
                     <div class="logo-icon">
                         <i class="fas fa-building"></i>
-        </div>
+                    </div>
                     <div class="logo-text">MicroTech Center</div>
                 </div>
                 <div class="sidebar-subtitle">Analytics & Reports</div>
@@ -25,84 +33,88 @@
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" placeholder="Search students, courses, staff...">
-      </div>
-    </div>
+                </div>
+            </div>
 
             <nav class="nav-menu">
-                <a href="admin-dashboard" class="nav-item">
+                <a href="admin-dashboard.html" class="nav-item">
                     <i class="fas fa-home nav-icon"></i>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="revenue" class="nav-item">
+                <a href="revenue.html" class="nav-item">
                     <i class="fas fa-dollar-sign nav-icon"></i>
                     <span class="nav-text">Revenue Management</span>
                 </a>
-                <a href="student" class="nav-item">
+                <a href="student.html" class="nav-item">
                     <i class="fas fa-users nav-icon"></i>
                     <span class="nav-text">Students</span>
                 </a>
-                <a href="staff" class="nav-item">
+                <a href="staff.html" class="nav-item">
                     <i class="fas fa-user-tie nav-icon"></i>
                     <span class="nav-text">Staff</span>
                 </a>
-                <a href="counselors" class="nav-item">
+                <a href="counselors.html" class="nav-item">
                     <i class="fas fa-phone nav-icon"></i>
                     <span class="nav-text">Counselors</span>
                 </a>
-                <a href="courses" class="nav-item">
+                <a href="courses.html" class="nav-item">
                     <i class="fas fa-book-open nav-icon"></i>
                     <span class="nav-text">Courses & Academics</span>
                 </a>
-                <a href="fees" class="nav-item">
+                <a href="fees.html" class="nav-item">
                     <i class="fas fa-credit-card nav-icon"></i>
                     <span class="nav-text">Fee Management</span>
                 </a>
-                <a href="communication" class="nav-item">
+                <a href="receipt.html" class="nav-item">
+                    <i class="fas fa-receipt nav-icon"></i>
+                    <span class="nav-text">Receipt Management</span>
+                </a>
+                <a href="communication.html" class="nav-item">
                     <i class="fas fa-comments nav-icon"></i>
                     <span class="nav-text">Communication</span>
                 </a>
-                <a href="advertisement" class="nav-item">
+                <a href="advertisement.html" class="nav-item">
                     <i class="fas fa-bullhorn nav-icon"></i>
                     <span class="nav-text">Advertisement</span>
                 </a>
-                <a href="alumni" class="nav-item">
+                <a href="alumni.html" class="nav-item">
                     <i class="fas fa-graduation-cap nav-icon"></i>
                     <span class="nav-text">Alumni Portal</span>
                 </a>
-                <a href="scholarship" class="nav-item">
+                <a href="scholarship.html" class="nav-item">
                     <i class="fas fa-shield-alt nav-icon"></i>
                     <span class="nav-text">Scholarship & Offers</span>
                 </a>
-                <a href="referral" class="nav-item">
+                <a href="referral.html" class="nav-item">
                     <i class="fas fa-share-alt nav-icon"></i>
                     <span class="nav-text">Referral Program</span>
                 </a>
-                <a href="analytics" class="nav-item active">
+                <a href="analytics.html" class="nav-item active">
                     <i class="fas fa-chart-bar nav-icon"></i>
                     <span class="nav-text">Analytics & Reports</span>
                 </a>
-                <a href="notifications" class="nav-item">
+                <a href="notifications.html" class="nav-item">
                     <i class="fas fa-bell nav-icon"></i>
                     <span class="nav-text">Notifications</span>
                 </a>
-                <a href="settings" class="nav-item">
+                <a href="settings.html" class="nav-item">
                     <i class="fas fa-cog nav-icon"></i>
                     <span class="nav-text">Settings</span>
                 </a>
-                <a href="cloud" class="nav-item">
+                <a href="cloud.html" class="nav-item">
                     <i class="fas fa-cloud nav-icon"></i>
                     <span class="nav-text">Cloud</span>
                 </a>
-                <a href="expenses" class="nav-item">
+                <a href="expenses.html" class="nav-item">
                     <i class="fas fa-wallet nav-icon"></i>
                     <span class="nav-text">Expenses</span>
                 </a>
-                <a href="finance" class="nav-item">
+                <a href="finance.html" class="nav-item">
                     <i class="fas fa-chart-line nav-icon"></i>
                     <span class="nav-text">Finance</span>
                 </a>
             </nav>
-      </div>
+        </div>
       
         <!-- Main Content -->
         <div class="main-content">
@@ -111,13 +123,27 @@
                 <div class="header-search">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" placeholder="Search students, courses, staff...">
-    </div>
+                </div>
 
                 <div class="header-right">
-                    <div class="notifications">
-                        <i class="fas fa-bell bell-icon"></i>
-                        <div class="notification-badge">3</div>
-    </div>
+                    <div class="notifications" id="notifications-container">
+                        <div class="bell-icon" id="notification-bell">
+                            <i class="fas fa-bell"></i>
+                            <div class="notification-badge" id="notification-badge">0</div>
+                        </div>
+                        <div class="notifications-dropdown" id="notifications-dropdown">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-all-read" id="mark-all-read">Mark all as read</button>
+                            </div>
+                            <div class="notifications-list" id="notifications-list">
+                                <!-- Notifications will be populated by JavaScript -->
+                            </div>
+                            <div class="notifications-footer">
+                                <a href="notifications.html">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="user-profile">
                         <div class="user-avatar">
@@ -128,24 +154,796 @@
                             <div class="user-role">Super Admin</div>
                         </div>
                         <i class="fas fa-chevron-down user-dropdown"></i>
-      </div>
-    </div>
-  </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Dashboard Content -->
             <div class="dashboard-title">Analytics & Reports</div>
-            <div class="dashboard-subtitle">View analytics and reports.</div>
+            <div class="dashboard-subtitle">Comprehensive insights and data exports for MicroTech</div>
 
-            <!-- Placeholder Content -->
-            <div style="padding: 20px;">
-                <h2>Analytics & Reports Content Goes Here</h2>
+            <!-- Analytics Container -->
+            <div class="analytics-wrapper">
+                
+                <!-- Top KPI Cards Section -->
+                <section class="kpi-section">
+                    <div class="kpi-grid">
+                        <div class="kpi-card" data-kpi="revenue">
+                            <div class="kpi-icon revenue">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Total Revenue</h3>
+                                <div class="kpi-value" id="totalRevenue">₹0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-period" id="revenuePeriod">MTD</span>
+                                    <span class="kpi-change positive" id="revenueChange">
+                                        <i class="fas fa-arrow-up"></i> 12.5%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="collected">
+                            <div class="kpi-icon collected">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Collected Today</h3>
+                                <div class="kpi-value" id="collectedToday">₹0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-count" id="collectedCount">0 transactions</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="pending">
+                            <div class="kpi-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Pending Fees</h3>
+                                <div class="kpi-value" id="pendingFees">₹0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-count" id="pendingCount">0 students</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="enrollments">
+                            <div class="kpi-icon enrollments">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">New Enrollments</h3>
+                                <div class="kpi-value" id="newEnrollments">0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-period">Last 30 days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="conversion">
+                            <div class="kpi-icon conversion">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Conversion Rate</h3>
+                                <div class="kpi-value" id="conversionRate">0%</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-count" id="conversionDetails">0/0 converted</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="profit">
+                            <div class="kpi-icon profit">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Net Profit</h3>
+                                <div class="kpi-value" id="netProfit">₹0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-details" id="profitDetails">Revenue - Expenses</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card" data-kpi="courses">
+                            <div class="kpi-icon courses">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 class="kpi-label">Active Courses</h3>
+                                <div class="kpi-value" id="activeCourses">0</div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-count" id="courseStudents">0 total students</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filters Bar -->
+                <section class="filters-section">
+                    <div class="filters-container">
+                        <div class="filters-row">
+                            <!-- Date Range Presets -->
+                            <div class="filter-group">
+                                <label>Date Range</label>
+                                <div class="date-presets">
+                                    <button class="preset-btn active" data-preset="today">Today</button>
+                                    <button class="preset-btn" data-preset="7d">7 Days</button>
+                                    <button class="preset-btn" data-preset="30d">30 Days</button>
+                                    <button class="preset-btn" data-preset="mtd">MTD</button>
+                                    <button class="preset-btn" data-preset="ytd">YTD</button>
+                                    <button class="preset-btn" data-preset="custom">Custom</button>
+                                </div>
+                            </div>
+
+                            <!-- Custom Date Range Picker -->
+                            <div class="filter-group" id="customDateGroup" style="display: none;">
+                                <label>Custom Range</label>
+                                <input type="text" id="customDateRange" class="date-picker" placeholder="Select date range">
+                            </div>
+
+                            <!-- Division Filter -->
+                            <div class="filter-group">
+                                <label>Division</label>
+                                <select id="divisionFilter" class="filter-select">
+                                    <option value="all">All Divisions</option>
+                                    <option value="GAMA">GAMA</option>
+                                    <option value="CAPT">CAPT</option>
+                                    <option value="LBS">LBS</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+
+                            <!-- Course Filter -->
+                            <div class="filter-group">
+                                <label>Course</label>
+                                <select id="courseFilter" class="filter-select">
+                                    <option value="all">All Courses</option>
+                                    <!-- Dynamic options loaded from Firestore -->
+                                </select>
+                            </div>
+
+                            <!-- Counselor Filter -->
+                            <div class="filter-group">
+                                <label>Counselor</label>
+                                <select id="counselorFilter" class="filter-select">
+                                    <option value="all">All Counselors</option>
+                                    <!-- Dynamic options loaded from Firestore -->
+                                </select>
+                            </div>
+
+                            <!-- Payment Method Filter -->
+                            <div class="filter-group">
+                                <label>Payment Method</label>
+                                <select id="paymentMethodFilter" class="filter-select">
+                                    <option value="all">All Methods</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Card">Card</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
+
+                            <!-- Status Filter -->
+                            <div class="filter-group">
+                                <label>Status</label>
+                                <select id="statusFilter" class="filter-select">
+                                    <option value="all">All Statuses</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Partial">Partial</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="filters-actions">
+                            <button id="applyFiltersBtn" class="btn btn-primary">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                            <button id="resetFiltersBtn" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                            <button id="exportBtn" class="btn btn-success">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button id="scheduleReportBtn" class="btn btn-info">
+                                <i class="fas fa-calendar-alt"></i> Schedule Report
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="charts-grid">
+                        <!-- Revenue Trend Chart -->
+                        <div class="chart-card large">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-chart-line"></i> Revenue Trend</h3>
+                                <div class="chart-controls">
+                                    <select id="revenueTrendGranularity" class="chart-select">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly" selected>Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueTrendChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Division Revenue Share -->
+                        <div class="chart-card medium">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-chart-pie"></i> Division Revenue Share</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="divisionRevenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Enrollments vs Dropoffs -->
+                        <div class="chart-card medium">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-chart-bar"></i> Enrollments vs Dropoffs</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="enrollmentsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Payment Mode Split -->
+                        <div class="chart-card small">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-wallet"></i> Payment Methods</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="paymentModeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Course Performance -->
+                        <div class="chart-card small">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-graduation-cap"></i> Top Courses</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="topCoursesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Drill-Down Tables Section -->
+                <section class="tables-section">
+                    <div class="tables-container">
+                        
+                        <!-- Recent Transactions Table -->
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3><i class="fas fa-receipt"></i> Recent Transactions</h3>
+                                <div class="table-controls">
+                                    <input type="search" id="transactionSearch" class="table-search" placeholder="Search transactions...">
+                                    <button id="exportTransactionsBtn" class="btn-icon" title="Export to CSV">
+                                        <i class="fas fa-file-csv"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="transactionsTable" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-sort="transactionID">Transaction ID</th>
+                                            <th data-sort="studentID">Student ID</th>
+                                            <th data-sort="studentName">Student Name</th>
+                                            <th data-sort="division">Division</th>
+                                            <th data-sort="course">Course</th>
+                                            <th data-sort="amount">Amount</th>
+                                            <th data-sort="balance">Balance</th>
+                                            <th data-sort="date">Date</th>
+                                            <th data-sort="counselor">Counselor</th>
+                                            <th data-sort="receiptNo">Receipt No</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactionsTableBody">
+                                        <!-- Dynamic content loaded via JavaScript -->
+                                        <tr class="loading-row">
+                                            <td colspan="11">
+                                                <div class="loading-spinner"></div>
+                                                <span>Loading transactions...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-pagination">
+                                <div class="pagination-info">
+                                    Showing <span id="transactionsStart">0</span> - <span id="transactionsEnd">0</span> of <span id="transactionsTotal">0</span>
+                                </div>
+                                <div class="pagination-controls">
+                                    <button id="transactionsPrev" class="btn-icon"><i class="fas fa-chevron-left"></i></button>
+                                    <span id="transactionsPage">Page 1</span>
+                                    <button id="transactionsNext" class="btn-icon"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Fees Table -->
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Pending Fees</h3>
+                                <div class="table-controls">
+                                    <input type="search" id="pendingSearch" class="table-search" placeholder="Search pending...">
+                                    <button id="sendBulkRemindersBtn" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-bell"></i> Send Reminders
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="pendingTable" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="selectAllPending"></th>
+                                            <th data-sort="studentID">Student ID</th>
+                                            <th data-sort="studentName">Student Name</th>
+                                            <th data-sort="division">Division</th>
+                                            <th data-sort="course">Course</th>
+                                            <th data-sort="totalFee">Total Fee</th>
+                                            <th data-sort="paid">Paid</th>
+                                            <th data-sort="balance">Balance</th>
+                                            <th data-sort="dueDate">Due Date</th>
+                                            <th data-sort="overdue">Days Overdue</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pendingTableBody">
+                                        <tr class="loading-row">
+                                            <td colspan="11">
+                                                <div class="loading-spinner"></div>
+                                                <span>Loading pending fees...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Top Courses Table -->
+                        <div class="table-card half-width">
+                            <div class="table-header">
+                                <h3><i class="fas fa-trophy"></i> Top Courses by Revenue</h3>
+                                <div class="table-controls">
+                                    <select id="topCoursesMetric" class="chart-select">
+                                        <option value="revenue">By Revenue</option>
+                                        <option value="enrollments">By Enrollments</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="topCoursesTable" class="data-table compact">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Course Name</th>
+                                            <th>Division</th>
+                                            <th>Enrollments</th>
+                                            <th>Revenue</th>
+                                            <th>Avg Fee</th>
+                                            <th>Trend</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topCoursesTableBody">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Counselor Performance Table -->
+                        <div class="table-card half-width">
+                            <div class="table-header">
+                                <h3><i class="fas fa-users"></i> Counselor Performance</h3>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="counselorTable" class="data-table compact">
+                                    <thead>
+                                        <tr>
+                                            <th>Counselor</th>
+                                            <th>Inquiries</th>
+                                            <th>Conversions</th>
+                                            <th>Conv %</th>
+                                            <th>Revenue</th>
+                                            <th>Avg Deal</th>
+                                            <th>Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="counselorTableBody">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Reports Panel Section -->
+                <section class="reports-section">
+                    <h2 class="section-title"><i class="fas fa-file-alt"></i> Reports & Exports</h2>
+                    <div class="reports-container">
+                        
+                        <!-- Pre-built Reports -->
+                        <div class="reports-card">
+                            <div class="reports-header">
+                                <h3><i class="fas fa-file-alt"></i> Pre-built Reports</h3>
+                            </div>
+                            <div class="reports-grid">
+                                <div class="report-item" data-report="daily-collection">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <h4>Daily Collection Summary</h4>
+                                    <p>Today's collection breakdown by division and payment method</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                                <div class="report-item" data-report="monthly-revenue">
+                                    <i class="fas fa-calendar"></i>
+                                    <h4>Monthly Revenue by Division</h4>
+                                    <p>Month-over-month revenue comparison across all divisions</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                                <div class="report-item" data-report="overdue-fees">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <h4>Overdue Fee Report</h4>
+                                    <p>Students with overdue payments and pending balances</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                                <div class="report-item" data-report="course-enrollment">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <h4>Course Enrollment Report</h4>
+                                    <p>Enrollment statistics and trends by course and division</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                                <div class="report-item" data-report="refunds-adjustments">
+                                    <i class="fas fa-undo"></i>
+                                    <h4>Refunds & Adjustments</h4>
+                                    <p>All refunds, discounts, and fee adjustments</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                                <div class="report-item" data-report="expense-analysis">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <h4>Expense Analysis</h4>
+                                    <p>Expense breakdown and budget comparison</p>
+                                    <button class="btn-report">Generate</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Report Builder -->
+                        <div class="reports-card">
+                            <div class="reports-header">
+                                <h3><i class="fas fa-cogs"></i> Custom Report Builder</h3>
+                                <button id="resetReportBuilder" class="btn-icon" title="Reset builder">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            <div class="report-builder">
+                                <div class="builder-section">
+                                    <label>Select Fields</label>
+                                    <div class="field-checkboxes">
+                                        <label><input type="checkbox" name="field" value="studentID" checked> Student ID</label>
+                                        <label><input type="checkbox" name="field" value="studentName" checked> Student Name</label>
+                                        <label><input type="checkbox" name="field" value="division" checked> Division</label>
+                                        <label><input type="checkbox" name="field" value="course" checked> Course</label>
+                                        <label><input type="checkbox" name="field" value="totalFee"> Total Fee</label>
+                                        <label><input type="checkbox" name="field" value="paidAmount"> Paid Amount</label>
+                                        <label><input type="checkbox" name="field" value="balance"> Balance</label>
+                                        <label><input type="checkbox" name="field" value="paymentDate"> Payment Date</label>
+                                        <label><input type="checkbox" name="field" value="paymentMethod"> Payment Method</label>
+                                        <label><input type="checkbox" name="field" value="counselor"> Counselor</label>
+                                        <label><input type="checkbox" name="field" value="receiptNo"> Receipt No</label>
+                                        <label><input type="checkbox" name="field" value="status"> Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="builder-row">
+                                    <div class="builder-section">
+                                        <label>Filters</label>
+                                        <div class="builder-filters">
+                                            <select id="builderDivision">
+                                                <option value="">All Divisions</option>
+                                                <option value="GAMA">GAMA</option>
+                                                <option value="CAPT">CAPT</option>
+                                                <option value="LBS">LBS</option>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                            <select id="builderStatus">
+                                                <option value="">All Statuses</option>
+                                                <option value="Paid">Paid</option>
+                                                <option value="Partial">Partial</option>
+                                                <option value="Pending">Pending</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="builder-section">
+                                        <label>Group By</label>
+                                        <select id="builderGroupBy">
+                                            <option value="">No Grouping</option>
+                                            <option value="division">Division</option>
+                                            <option value="course">Course</option>
+                                            <option value="counselor">Counselor</option>
+                                            <option value="paymentMethod">Payment Method</option>
+                                            <option value="date">Date</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="builder-section">
+                                        <label>Sort By</label>
+                                        <div class="builder-sort">
+                                            <select id="builderSortBy">
+                                                <option value="paymentDate">Payment Date</option>
+                                                <option value="studentName">Student Name</option>
+                                                <option value="paidAmount">Amount</option>
+                                                <option value="balance">Balance</option>
+                                            </select>
+                                            <select id="builderSortOrder">
+                                                <option value="desc">Descending</option>
+                                                <option value="asc">Ascending</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="builder-actions">
+                                    <button id="previewReportBtn" class="btn btn-secondary">
+                                        <i class="fas fa-eye"></i> Preview
+                                    </button>
+                                    <button id="exportCustomPDFBtn" class="btn btn-danger">
+                                        <i class="fas fa-file-pdf"></i> Export PDF
+                                    </button>
+                                    <button id="exportCustomCSVBtn" class="btn btn-success">
+                                        <i class="fas fa-file-csv"></i> Export CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scheduled Reports -->
+                        <div class="reports-card">
+                            <div class="reports-header">
+                                <h3><i class="fas fa-clock"></i> Scheduled Reports</h3>
+                                <button id="createScheduleBtn" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> New Schedule
+                                </button>
+                            </div>
+                            <div class="scheduled-reports-list" id="scheduledReportsList">
+                                <!-- Dynamic scheduled reports loaded here -->
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <p>No scheduled reports yet</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Analytics Widgets Section -->
+                <section class="widgets-section">
+                    <h2 class="section-title"><i class="fas fa-chart-area"></i> Advanced Analytics</h2>
+                    <div class="widgets-grid">
+                        
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Anomaly Detection</h4>
+                            </div>
+                            <div class="widget-content" id="anomalyWidget">
+                                <div class="empty-state-small">No anomalies detected</div>
+                            </div>
+                        </div>
+
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h4><i class="fas fa-user-circle"></i> ARPU</h4>
+                                <span class="widget-tooltip" title="Average Revenue Per User">?</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="metric-large" id="arpuValue">₹0</div>
+                                <div class="metric-subtitle">per student this month</div>
+                            </div>
+                        </div>
+
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h4><i class="fas fa-history"></i> LTV Estimate</h4>
+                                <span class="widget-tooltip" title="Lifetime Value (rough estimate)">?</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="metric-large" id="ltvValue">₹0</div>
+                                <div class="metric-subtitle">average per student</div>
+                            </div>
+                        </div>
+
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h4><i class="fas fa-users-slash"></i> Churn Rate</h4>
+                            </div>
+                            <div class="widget-content">
+                                <div class="metric-large" id="churnRate">0%</div>
+                                <div class="metric-subtitle" id="churnDetails">0 students left this month</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Audit & Logs Section -->
+                <section class="audit-section">
+                    <div class="audit-card">
+                        <div class="audit-header">
+                            <h3><i class="fas fa-history"></i> Audit Trail & Export Logs</h3>
+                        </div>
+                        <div class="audit-content">
+                            <div class="audit-stats">
+                                <div class="audit-stat">
+                                    <i class="fas fa-database"></i>
+                                    <span>Last Backup: <strong id="lastBackup">-</strong></span>
+                                </div>
+                                <div class="audit-stat">
+                                    <i class="fas fa-file-export"></i>
+                                    <span>Exports Today: <strong id="exportsToday">0</strong></span>
+                                </div>
+                                <div class="audit-stat">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>Scheduled Reports Active: <strong id="activeSchedules">0</strong></span>
+                                </div>
+                            </div>
+                            <div class="audit-table-wrapper">
+                                <table class="data-table compact">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>User</th>
+                                            <th>Action</th>
+                                            <th>Report Type</th>
+                                            <th>File Size</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="auditLogBody">
+                                        <!-- Dynamic audit logs -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Export Options -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-download"></i> Export Options</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <label>Export Format</label>
+                    <div class="format-buttons">
+                        <button class="format-btn" data-format="csv">
+                            <i class="fas fa-file-csv"></i> CSV
+                        </button>
+                        <button class="format-btn" data-format="pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="format-btn" data-format="excel">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                    </div>
+
+                    <label>Include</label>
+                    <div class="export-checkboxes">
+                        <label><input type="checkbox" id="includeFilters" checked> Current Filters Applied</label>
+                        <label><input type="checkbox" id="includeKPI" checked> KPI Summary</label>
+                        <label><input type="checkbox" id="includeCharts"> Charts & Graphs</label>
+                        <label><input type="checkbox" id="includeDetails" checked> Transaction Details</label>
+                    </div>
+
+                    <label>Email Report (Optional)</label>
+                    <input type="email" id="exportEmail" class="form-input" placeholder="Enter email address">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelExport">Cancel</button>
+                <button class="btn btn-success" id="confirmExport">
+                    <i class="fas fa-download"></i> Export Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Schedule Report -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-alt"></i> Schedule Report</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="schedule-form">
+                    <div class="form-group">
+                        <label>Report Name</label>
+                        <input type="text" id="scheduleName" class="form-input" placeholder="e.g., Weekly Revenue Summary">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Report Type</label>
+                        <select id="scheduleReportType" class="form-select">
+                            <option value="daily-collection">Daily Collection Summary</option>
+                            <option value="monthly-revenue">Monthly Revenue by Division</option>
+                            <option value="overdue-fees">Overdue Fee Report</option>
+                            <option value="custom">Custom (from builder)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Frequency</label>
+                        <select id="scheduleFrequency" class="form-select">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" id="scheduleTime" class="form-input" value="09:00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Recipients (comma-separated emails)</label>
+                        <textarea id="scheduleRecipients" class="form-textarea" placeholder="admin@microtech.com, manager@microtech.com" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Format</label>
+                        <select id="scheduleFormat" class="form-select">
+                            <option value="pdf">PDF</option>
+                            <option value="csv">CSV</option>
+                            <option value="both">Both PDF & CSV</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelSchedule">Cancel</button>
+                <button class="btn btn-info" id="confirmSchedule">
+                    <i class="fas fa-calendar-check"></i> Create Schedule
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Toast notification container -->
     <div id="toast-container" style="position:fixed;top:24px;right:24px;z-index:9999;"></div>
-    <script type="module" src="js/toast.js"></script>
-    <script type="module" src="js/analytics.js"></script>
+    
+    <!-- Firebase Scripts -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="analytics.js"></script>
+    <script type="module" src="analytics-charts.js"></script>
+    <script type="module" src="analytics-reports.js"></script>
+    <script type="module" src="analytics-scheduled.js"></script>
 </body>
 </html>

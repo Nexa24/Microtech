@@ -5,128 +5,120 @@
   <link rel="icon" href="micro-tech-center.jpg.png" sizes="32x32">
   <link rel="apple-touch-icon" href="micro-tech-center.jpg.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login & Register</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <title>Admin Login - MicroTech</title>
   <link rel="stylesheet" href="auth.css" />
 </head>
 <body>
-  <div class="background"></div>
-
-  <div class="form-container">
-    <button type="button" class="close-btn-modal"><i class='bx bx-x'></i></button>
-
-    <!-- Login Form -->
-    <div class="form-box login active">
-      <h2>Login</h2>
-      <form id="loginForm">
-        <div class="input-group">
-          <i class='bx bx-user'></i>
-          <input type="email" id="loginEmail" placeholder="Email" required />
+  <div class="auth-container">
+    <!-- Left Side - Branding & Illustration -->
+    <div class="auth-left">
+      <div class="branding">
+        <div class="logo">
+          <img src="micro-tech-center.jpg.png" alt="MicroTech" class="logo-img">
+          <span class="brand-name">MicroTech</span>
         </div>
-
-        <div class="input-group">
-          <i class='bx bx-lock'></i>
-          <input type="password" id="loginPassword" placeholder="Password" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-user-pin'></i>
-          <select id="loginRole" required>
-            <option value="" disabled selected>Select Role</option>
-            <option value="admin">Admin</option>
-            <option value="counselor">Counselor</option>
-          </select>
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-      <p>Don't have an account? <span class="toggle-link" data-target="register">Register</span></p>
+        <h1 class="tagline">Empowering Education,<br>Transforming Futures</h1>
+      </div>
+      <div class="illustration">
+        <!-- Decorative SVG or background -->
+      </div>
     </div>
-
-    <!-- Register Form -->
-    <div class="form-box register">
-      <h2>Register</h2>
-      <form id="registerForm">
-        <div class="input-group">
-          <i class='bx bx-user'></i>
-          <input type="text" id="regName" placeholder="Name" required />
+    
+    <!-- Right Side - Login Form -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <div class="card-header">
+          <h2 class="card-title">Welcome Back</h2>
+          <p class="card-subtitle">Sign in by entering the information below</p>
         </div>
 
-        <div class="input-group">
-          <i class='bx bx-envelope'></i>
-          <input type="email" id="regEmail" placeholder="Email" required />
-        </div>
+        <form id="loginForm" class="login-form">
+          <div class="form-field">
+            <label for="loginEmail" class="field-label">Email</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input 
+                type="email" 
+                id="loginEmail" 
+                placeholder="11617072709@.com" 
+                required 
+                autocomplete="email"
+                class="form-input"
+              />
+            </div>
+          </div>
 
-        <div class="input-group">
-          <i class='bx bx-phone'></i>
-          <input type="tel" id="regNumber" placeholder="Phone Number" required />
-        </div>
+          <div class="form-field">
+            <label for="loginPassword" class="field-label">Password</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                placeholder="Please enter your password" 
+                required 
+                autocomplete="current-password"
+                class="form-input"
+              />
+              <button type="button" class="password-toggle" id="togglePassword">
+                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
 
-        <div class="input-group">
-          <i class='bx bx-chat'></i>
-          <input type="tel" id="regWhatsApp" placeholder="WhatsApp Number" />
-        </div>
+          <div class="form-options">
+            <label class="checkbox-container">
+              <input type="checkbox" id="rememberMe" />
+              <span class="checkmark"></span>
+              <span class="checkbox-label">Remember me</span>
+            </label>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+          </div>
 
-        <div class="input-group">
-          <i class='bx bx-user-circle'></i>
-          <input type="number" id="regAge" placeholder="Age" required />
-        </div>
+          <button type="submit" class="btn-primary">
+            <span>Login</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </form>
 
-        <div class="input-group">
-          <i class='bx bx-map'></i>
-          <input type="text" id="regAddress" placeholder="Address" required />
+        <div class="auth-footer">
+          <p class="footer-text">
+            Don't have an account? 
+            <a href="#" class="register-link">Register here</a>
+          </p>
         </div>
-
-        <div class="input-group">
-          <i class='bx bx-map-pin'></i>
-          <input type="text" id="regDistrict" placeholder="District" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-globe'></i>
-          <input type="text" id="regState" placeholder="State" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-flag'></i>
-          <input type="text" id="regCountry" placeholder="Country" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-package'></i>
-          <input type="text" id="regZip" placeholder="Zip / PIN Code" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-lock'></i>
-          <input type="password" id="regPassword" placeholder="Password" required />
-        </div>
-
-        <div class="input-group">
-          <i class='bx bx-user-pin'></i>
-          <select id="regRole" required>
-            <option value="" disabled selected>Select Role</option>
-            <option value="admin">Admin</option>
-            <option value="counselor">Counselor</option>
-          </select>
-        </div>
-
-        <div class="input-group" id="adminSecret" style="display: none;">
-          <i class='bx bx-key'></i>
-          <input type="text" id="adminCode" placeholder="Admin Secret (if admin)" />
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
-      <p>Already have an account? <span class="toggle-link" data-target="login">Login</span></p>
+      </div>
     </div>
   </div>
 
-  <div id="loadingOverlay">
-  <div class="loader"></div>
-</div>
+  <div id="loadingOverlay" style="display: none;">
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <p class="loader-text">Signing you in...</p>
+    </div>
+  </div>
 
-  <div id="transition-overlay"></div>
   <script src="auth.js" type="module"></script>
+  <script>
+    // Password toggle functionality
+    document.getElementById('togglePassword')?.addEventListener('click', function() {
+      const passwordInput = document.getElementById('loginPassword');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>

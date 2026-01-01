@@ -287,15 +287,14 @@
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
+  // Your web app's Firebase configuration (matches admin dashboard)
   const firebaseConfig = {
-    apiKey: "AIzaSyD5pgNOjCXdkopJW_mtqTpnaa-8MyUZzHc",
+    apiKey: "AIzaSyDUJut5RTre7-dMnZa1F7aMUgYMz3xN06Y",
     authDomain: "microtech-88235.firebaseapp.com",
     projectId: "microtech-88235",
-    storageBucket: "microtech-88235.firebasestorage.app",
-    messagingSenderId: "177325108755",
-    appId: "1:177325108755:web:37d5a44e9a721a501359e6",
-    measurementId: "G-0NXTJF6L49"
+    storageBucket: "microtech-88235.appspot.com",
+    messagingSenderId: "156750699730",
+    appId: "1:156750699730:web:5ec11e8b5af90a21a26159"
   };
 
   // Initialize Firebase
@@ -316,30 +315,79 @@
 
   async function loadCourses() {
     try {
+      console.log('🔥 Loading courses from Firebase...');
+      grid.innerHTML = "<p style='text-align: center; padding: 40px; color: #0ea5e9;'><i class='fas fa-spinner fa-spin'></i> Loading courses...</p>";
+      
       const snapshot = await getDocs(collection(db, 'courses'));
-      allCourses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log('📊 Found', snapshot.size, 'courses');
+      
+      allCourses = snapshot.docs.map(doc => {
+        const data = doc.data();
+        console.log('📄 Course:', doc.id, data.name);
+        return { id: doc.id, ...data };
+      });
+      
+      console.log('✅ All courses loaded:', allCourses);
       renderCourses(allCourses);
+      
+      if (allCourses.length === 0) {
+        console.warn('⚠️ No courses found in database');
+      }
     } catch (error) {
-      console.error("Error loading courses:", error);
-      grid.innerHTML = "<p style='color:red; text-align:center;'>Failed to load courses.</p>";
+      console.error("❌ Error loading courses:", error);
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
+      grid.innerHTML = `
+        <div style='text-align:center; padding: 40px; color: #ef4444;'>
+          <i class='fas fa-exclamation-triangle' style='font-size: 3rem; margin-bottom: 16px;'></i>
+          <p style='font-size: 1.2rem; margin-bottom: 8px;'>Failed to load courses</p>
+          <p style='font-size: 0.9rem; color: #64748b;'>${error.message}</p>
+          <button onclick='location.reload()' style='margin-top: 16px; padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer;'>
+            <i class='fas fa-redo'></i> Retry
+          </button>
+        </div>
+      `;
     }
   }
 
   function renderCourses(courses) {
     grid.innerHTML = '';
     if (courses.length === 0) {
-      grid.innerHTML = "<p>No matching courses found.</p>";
+      grid.innerHTML = "<p style='text-align: center; padding: 40px; color: #64748b;'>No matching courses found.</p>";
       return;
     }
     courses.forEach(course => {
       const card = document.createElement('div');
       card.className = 'course-card';
       card.onclick = () => showModal(course);
+      
+      // Get provider display
+      let providerText = 'Various';
+      if (Array.isArray(course.provider)) {
+        providerText = course.provider.map(p => p.toUpperCase()).join(', ');
+      } else if (Array.isArray(course.providers)) {
+        providerText = course.providers.map(p => p.toUpperCase()).join(', ');
+      } else if (course.provider) {
+        providerText = course.provider.toUpperCase();
+      }
+      
+      // Get image URL
+      const imageUrl = course.image || course.imageURL || 'https://via.placeholder.com/300x180?text=' + encodeURIComponent(course.name || 'Course');
+      
+      // Get description (truncate if too long)
+      const description = course.description || 'Click to view details';
+      const shortDesc = description.length > 80 ? description.substring(0, 80) + '...' : description;
+      
       card.innerHTML = `
-        <img src="${course.image || '#'}" alt="${course.name}">
+        <img src="${imageUrl}" alt="${course.name || 'Course'}" onerror="this.src='https://via.placeholder.com/300x180?text=Course+Image'">
         <div class="course-card-content">
-          <div class="course-title">${course.name}</div>
-          <div class="course-short">${course.description}</div>
+          <div class="course-title">${course.name || 'Untitled Course'}</div>
+          <div class="course-short" style="margin-bottom: 8px;">${shortDesc}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b; margin-top: 8px;">
+            <span><i class="fas fa-building" style="margin-right: 4px;"></i>${providerText}</span>
+            ${course.totalFee || course.fees ? `<span style="color: #0ea5e9; font-weight: bold;">₹${(course.totalFee || course.fees).toLocaleString()}</span>` : ''}
+          </div>
+          ${course.duration ? `<div style="font-size: 0.85rem; color: #64748b; margin-top: 4px;"><i class="fas fa-clock" style="margin-right: 4px;"></i>${course.duration} months</div>` : ''}
         </div>
       `;
       grid.appendChild(card);
@@ -347,14 +395,34 @@
   }
 
   function showModal(course) {
-    modalTitle.textContent = course.name;
-    modalImage.src = course.image || '';
+    modalTitle.textContent = course.name || 'Course Details';
+    modalImage.src = course.image || course.imageURL || '';
+    
+    // Handle provider as array or string
+    let providerDisplay = '-';
+    if (Array.isArray(course.provider)) {
+      providerDisplay = course.provider.map(p => p.toUpperCase()).join(', ');
+    } else if (course.provider) {
+      providerDisplay = course.provider;
+    }
+    
+    // Handle providers field (alternative field name)
+    if (course.providers && Array.isArray(course.providers)) {
+      providerDisplay = course.providers.map(p => p.toUpperCase()).join(', ');
+    }
+    
     modalMeta.innerHTML = `
-      <li><strong>Provider:</strong> ${course.provider || '-'}</li>
-      <li><strong>Description:</strong> ${course.description || '-'}</li>
-      <li><strong>Duration:</strong> ${course.duration || '-'}</li>
-      <li><strong>Eligibility:</strong> ${course.eligibility || '-'}</li>
-      <li><strong>Fees:</strong> ₹${course.fees || '-'}</li>
+      <li><strong>Provider:</strong> ${providerDisplay}</li>
+      <li><strong>Division:</strong> ${course.division || '-'}</li>
+      <li><strong>Description:</strong> ${course.description || 'No description available'}</li>
+      <li><strong>Duration:</strong> ${course.duration ? course.duration + ' months' : '-'}</li>
+      <li><strong>Eligibility:</strong> ${course.eligibility || 'Check with provider'}</li>
+      <li><strong>Total Fee:</strong> ₹${course.totalFee?.toLocaleString() || course.fees?.toLocaleString() || '-'}</li>
+      <li><strong>Admission Fee:</strong> ₹${course.admissionFee?.toLocaleString() || '-'}</li>
+      <li><strong>Status:</strong> <span style="color: ${course.status === 'Active' ? 'green' : 'orange'}">${course.status || 'Active'}</span></li>
+      ${course.startDate ? `<li><strong>Start Date:</strong> ${new Date(course.startDate).toLocaleDateString()}</li>` : ''}
+      ${course.endDate ? `<li><strong>End Date:</strong> ${new Date(course.endDate).toLocaleDateString()}</li>` : ''}
+      ${course.studentsEnrolled ? `<li><strong>Students Enrolled:</strong> ${course.studentsEnrolled.length || 0}</li>` : ''}
     `;
     modal.classList.add('show');
   }

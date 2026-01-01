@@ -1,0 +1,694 @@
+/* ===================================
+   🎨 ENHANCED FEE PAGE DESIGN CONTINUATION
+   =================================== */
+
+/* ===================================
+   🔍 FILTER SECTION - MODERN GLASS
+   =================================== */
+.filter-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    padding: 32px;
+    background: rgba(26, 29, 41, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 220px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 24px 16px 56px;
+    background: rgba(26, 29, 41, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239CA3AF' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    background-size: 24px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 
+        0 0 0 4px rgba(59, 130, 246, 0.15),
+        0 4px 16px rgba(59, 130, 246, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(26, 29, 41, 0.9);
+    transform: translateY(-2px);
+}
+
+.filter-select,
+.filter-input {
+    width: 100%;
+    padding: 16px 22px;
+    background: rgba(26, 29, 41, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 
+        0 0 0 4px rgba(59, 130, 246, 0.15),
+        0 4px 16px rgba(59, 130, 246, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(26, 29, 41, 0.9);
+    transform: translateY(-2px);
+}
+
+.filter-select:hover,
+.filter-input:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* ===================================
+   📑 TABS - MODERN DESIGN
+   =================================== */
+.tabs {
+    display: flex;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 36px;
+    gap: 4px;
+    background: rgba(26, 29, 41, 0.4);
+    padding: 8px;
+    border-radius: 16px 16px 0 0;
+}
+
+.tab-link {
+    background: transparent;
+    border: none;
+    color: rgba(156, 163, 175, 0.8);
+    padding: 18px 32px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+}
+
+.tab-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.08));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-link:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+.tab-link:hover::before {
+    opacity: 1;
+}
+
+.tab-link.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.15));
+    border-bottom-color: #3B82F6;
+    box-shadow: 
+        0 4px 16px rgba(59, 130, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tab-link.active::before {
+    opacity: 1;
+}
+
+.tab-link i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.tab-link:hover i,
+.tab-link.active i {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* ===================================
+   📊 TABLE - ULTRA-MODERN GLASS DESIGN
+   =================================== */
+.table-container {
+    background: rgba(26, 29, 41, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 1s ease 0.8s both;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1));
+    backdrop-filter: blur(10px);
+}
+
+th {
+    padding: 24px 20px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899);
+    transition: width 0.3s ease;
+}
+
+th:hover::after {
+    width: 100%;
+}
+
+td {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(209, 213, 219, 0.95);
+    font-size: 15px;
+    font-weight: 500;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+tbody tr {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+tbody tr::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #3B82F6, #8B5CF6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+tbody tr:hover {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.05), transparent);
+    transform: translateX(8px);
+    box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+tbody tr:hover::before {
+    opacity: 1;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===================================
+   🏷️ STATUS BADGES - ENHANCED
+   =================================== */
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s ease infinite;
+}
+
+.status-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.status-paid {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.15));
+    color: #10B981;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-partial {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.15));
+    color: #FBBF24;
+    border: 2px solid rgba(251, 191, 36, 0.3);
+}
+
+.status-pending {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.15));
+    color: #F59E0B;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-pending-current {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.15));
+    color: #FBBF24;
+    border: 2px solid rgba(251, 191, 36, 0.3);
+}
+
+.status-pending-month {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(249, 115, 22, 0.15));
+    color: #F97316;
+    border: 2px solid rgba(249, 115, 22, 0.3);
+}
+
+.status-pending-critical {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15));
+    color: #EF4444;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    animation: pulse-critical 2s ease-in-out infinite;
+}
+
+@keyframes pulse-critical {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.6);
+    }
+}
+
+/* ===================================
+   📈 CHARTS - MODERN GLASS CARDS
+   =================================== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 32px;
+    margin-bottom: 40px;
+    animation: fadeInUp 0.8s ease 1s both;
+}
+
+.chart-card {
+    background: rgba(26, 29, 41, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #3B82F6, #8B5CF6, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.chart-card:hover::before {
+    opacity: 1;
+}
+
+.chart-card h3 {
+    margin: 0 0 28px 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    letter-spacing: 0.3px;
+}
+
+.chart-card h3::before {
+    content: '';
+    width: 5px;
+    height: 32px;
+    background: linear-gradient(to bottom, #3B82F6, #8B5CF6, #EC4899);
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 320px;
+}
+
+/* ===================================
+   🎬 CONTENT BODY - MAIN CONTAINER
+   =================================== */
+.content-body {
+    background: rgba(26, 29, 41, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 1s ease 1.2s both;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    margin-top: 0;
+    margin-bottom: 32px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    letter-spacing: -0.5px;
+}
+
+.tab-content h2::before {
+    content: '';
+    width: 6px;
+    height: 40px;
+    background: linear-gradient(to bottom, #3B82F6, #8B5CF6, #EC4899);
+    border-radius: 3px;
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.5);
+}
+
+/* ===================================
+   📊 LEGEND CONTAINER
+   =================================== */
+.legend-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 28px;
+    padding: 20px 24px;
+    background: rgba(59, 130, 246, 0.08);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    flex-wrap: wrap;
+}
+
+.legend-container > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-container span:first-child {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.legend-container span:last-child {
+    color: rgba(209, 213, 219, 0.9);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ===================================
+   🎨 ACTION BUTTONS IN TABLE
+   =================================== */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+/* ===================================
+   📱 RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 1200px) {
+    .main-content {
+        margin-left: 280px;
+    }
+
+    .left-sidebar {
+        width: 280px;
+    }
+
+    .analytics-cards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .header-search {
+        width: 350px;
+    }
+
+    .page-title {
+        font-size: 40px;
+    }
+
+    .card p {
+        font-size: 34px;
+    }
+}
+
+@media (max-width: 768px) {
+    .left-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .left-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .analytics-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .header-search {
+        width: 100%;
+    }
+
+    .top-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .header-right {
+        justify-content: space-between;
+    }
+
+    .filter-section {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-link {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 16px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .card p {
+        font-size: 28px;
+    }
+
+    .content-body {
+        padding: 24px;
+    }
+
+    .chart-card {
+        padding: 24px;
+    }
+
+    .header-actions {
+        flex-direction: column;
+    }
+
+    .header-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ===================================
+   🎭 ANIMATIONS
+   =================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===================================
+   🎨 SCROLLBAR STYLING
+   =================================== */
+.left-sidebar::-webkit-scrollbar,
+.table-container::-webkit-scrollbar,
+.content-body::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.left-sidebar::-webkit-scrollbar-track,
+.table-container::-webkit-scrollbar-track,
+.content-body::-webkit-scrollbar-track {
+    background: rgba(26, 29, 41, 0.4);
+    border-radius: 4px;
+}
+
+.left-sidebar::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb,
+.content-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #3B82F6, #8B5CF6);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.left-sidebar::-webkit-scrollbar-thumb:hover,
+.table-container::-webkit-scrollbar-thumb:hover,
+.content-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #2563EB, #7C3AED);
+}
+
+/* ===================================
+   ✨ SMOOTH SCROLLING
+   =================================== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===================================
+   🎯 FOCUS VISIBLE FOR ACCESSIBILITY
+   =================================== */
+*:focus-visible {
+    outline: 3px solid #3B82F6;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* ===================================
+   🎨 SELECTION COLOR
+   =================================== */
+::selection {
+    background: rgba(59, 130, 246, 0.4);
+    color: #ffffff;
+}
